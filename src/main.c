@@ -14,32 +14,50 @@ int main()
 	floor.width = 10000;
 	floor.height = 100;
 
+	Rectangle floor_collision;
+	floor_collision.x = 0;
+	floor_collision.y = 495;
+	floor_collision.width = 10000;
+	floor_collision.height = 100;
+
 	Rectangle player;
 	player.x = 0;
 	player.y = 400;
 	player.width = 100;
 	player.height = 100;
 
-	Vector2 player_velo;
-	player_velo.x = 100;
-	player_velo.y = 100;
-	//TODO:geeks when too quick, breaks collision.
+	Vector2 velocity;
+	velocity.x = 0;
+	velocity.y = 0;
 
-	const float GRAVITY = 98;
-
+	const int JUMPVELOCITY = -1000;
+	const int WALKSPEED = 100;
+	const int GRAVITY = 50;
 	InitWindow(800, 600, "Mario");
 	SetTargetFPS(60);
+
 	while(!WindowShouldClose()){
 		float dt = GetFrameTime();
 
-		player.x += player_velo.x*dt;
-		player.y += player_velo.y*dt;
+		player.y += GRAVITY*dt;
 
-		player_velo.y += GRAVITY*dt;
-
+		bool OnGround = false;
 		if(CheckCollisionRecs(player,floor)){
-			player_velo.y *= -1;
+			player.y = floor.y-player.height;
+			velocity.y =0;
+			OnGround = true;
+			//TODO:(this does not work for platforms/need better solution)
 		}
+
+		if (OnGround &&IsKeyDown(KEY_W)){
+			player.y += JUMPVELOCITY*dt;
+		}
+		if (IsKeyDown(KEY_A)) {
+                player.x -= WALKSPEED*dt;
+        }
+		if (IsKeyDown(KEY_D)) {
+                player.x += WALKSPEED*dt;
+        }
 
 		camera.target = (Vector2){player.x + player.width/2, 300};
 
