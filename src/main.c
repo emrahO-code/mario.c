@@ -1,13 +1,14 @@
-#include <_stdio.h>
-#include <operations/basic.h>
-
+#include <stdio.h>
+#include <raylib.h>
 
 int main()
 {
-    const int a = 1;
-    const int b = 1;
-    const int c = add(a, b);
-    printf("Hello, world!\n");
-    printf("a + b = %d\n", c);
-    return 0;
+	InitWindow(800, 600, "Mario");
+	while(!WindowShouldClose()){
+		BeginDrawing();
+		DrawRectangle(100, 100, 100, 100, GRAY);
+		EndDrawing();
+	}
+	CloseWindow();
+	return 0;
 }

@@ -4,22 +4,23 @@ project(mario C)
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-# Include your headers
+# Include headers
 include_directories(include)
 
-# Add raylib from submodule
-add_subdirectory(extern/raylib)
+# Source files
+file(GLOB_RECURSE SOURCES "src/*.c")
 
-# Your source files
-file(GLOB SOURCES "src/*.c")
-
-# Build the executable
+# Find and link raylib
+find_package(raylib REQUIRED)
 add_executable(mario ${SOURCES})
-
-# Link raylib
 target_link_libraries(mario raylib)
 
-# Optional: raylib dependencies on Linux (skip on Windows/macOS)
-if(UNIX AND NOT APPLE)
-    target_link_libraries(mario m pthread dl GL X11)
+# macOS-specific frameworks
+if(APPLE)
+    target_link_libraries(mario
+            "-framework OpenGL"
+            "-framework Cocoa"
+            "-framework IOKit"
+            "-framework CoreVideo"
+    )
 endif()
