@@ -8,4 +8,3 @@ TODO list:
 
 3.Create more functional platforms and better floor collision.
 
-4.Add velocity/accel into equation for player jumping/running
