@@ -1,11 +1,21 @@
 #include <player.h>
 #include <raylib.h>
 
-Rectangle create_player(float x,float y){
-    Rectangle player;
-    player.x = x;
-    player.y = y;
-    player.width = 35;
-    player.height = 70;
+Player create_player(){
+    Rectangle rectangle;
+    rectangle.x = 0;
+    rectangle.y = 400;
+    rectangle.width = 35;
+    rectangle.height = 70;
+    Vector2 velocity;
+    velocity.x = 0;
+    velocity.y = 0;
+    Player player;
+    player.rectangle = rectangle;
+    player.velocity = velocity;
     return player;
+}
+
+void draw_player(Player p){
+    DrawRectangleRec(p.rectangle, GRAY);
 }

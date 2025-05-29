@@ -10,6 +10,8 @@ int main()
     const int JUMPVELOCITY = -400;
 	const int WALKSPEED = 100;
 	const int GRAVITY = 500;
+    const int PLATFORM_COUNT = 4;
+    const int COLLISION_RADIUS = 200;
 
     //SCREENSIZE INIT AND CAMERA
     Vector2 SCREENSIZE;
@@ -37,11 +39,7 @@ int main()
 	floor.width = 10000;
 	floor.height = 100;
 
-	Rectangle player = create_player(0,400);
-
-	Vector2 velocity;
-	velocity.x = 0;
-	velocity.y = 0;
+	Player player = create_player();
 
     //Init Window
 	InitWindow(SCREENSIZE.x, SCREENSIZE.y, "Mario");
@@ -51,31 +49,37 @@ int main()
 	while(!WindowShouldClose()){
 		float dt = GetFrameTime();
 
-		velocity.y += GRAVITY*dt;
+		player.velocity.y += GRAVITY*dt;
 
         //Collisions
 		bool OnGround = false;
-		if(CheckCollisionRecs(player,floor)){
-			player.y = floor.y-player.height;
-			velocity.y =0;
+        float correctedY;
+        float correctedX;
+		if(CheckCollisionRecs(player.rectangle,floor)){
+			player.rectangle.y = floor.y-player.rectangle.height;
+			player.velocity.y =0;
 			OnGround = true;
-		}
+		}else if (check_plat_collision(player, platforms, PLATFORM_COUNT, COLLISION_RADIUS, &correctedY, &correctedX)) {
+            player.rectangle.y = correctedY;
+            player.velocity.y = 0;
+            OnGround = true;
+        }
 
         //Key Movements
 		if (OnGround &&IsKeyDown(KEY_W)){
-			velocity.y += JUMPVELOCITY;
+			player.velocity.y += JUMPVELOCITY;
 		}
 		if (IsKeyDown(KEY_A)) {
-                player.x -= WALKSPEED*dt;
+                player.rectangle.x -= WALKSPEED*dt;
         }
 		if (IsKeyDown(KEY_D)) {
-                player.x += WALKSPEED*dt;
+                player.rectangle.x += WALKSPEED*dt;
         }
 
-        player.y += velocity.y*dt;
+        player.rectangle.y += player.velocity.y*dt;
 
         //Camera Moving
-		camera.target = (Vector2){player.x + player.width/2, 300};
+		camera.target = (Vector2){player.rectangle.x + player.rectangle.width/2, 300};
 
         //Object/Drawing Generation
 		BeginDrawing();
@@ -83,8 +87,7 @@ int main()
 
 		BeginMode2D(camera);
 		DrawRectangleRec(floor, BROWN);
-		DrawRectangleRec(player, GRAY);
-
+        draw_player(player);
         for(int i=0; i<4;i++){
             draw_platform(platforms[i]);
         }
