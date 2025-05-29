@@ -1,12 +1,11 @@
 #include <stdio.h>
 #include <raylib.h>
+#include <player.h>
+#include <camera.h>
 
 int main()
 {
-	Camera2D camera;
-	camera.offset = (Vector2) {400,300};
-	camera.rotation = 0;
-	camera.zoom = 1;
+	Camera2D camera = create_camera((Vector2) {400,300});
 
 	Rectangle floor;
 	floor.x = 0;
@@ -20,17 +19,13 @@ int main()
 	floor_collision.width = 10000;
 	floor_collision.height = 100;
 
-	Rectangle player;
-	player.x = 0;
-	player.y = 400;
-	player.width = 100;
-	player.height = 100;
+	Rectangle player = create_player(0,400);
 
 	Vector2 velocity;
 	velocity.x = 0;
 	velocity.y = 0;
 
-	const int JUMPVELOCITY = -1000;
+	const int JUMPVELOCITY = -2000;
 	const int WALKSPEED = 100;
 	const int GRAVITY = 50;
 	InitWindow(800, 600, "Mario");
