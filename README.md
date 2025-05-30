@@ -8,3 +8,6 @@ TODO list:
 
 3.Create more functional platforms and better floor collision.
 
+4.make enemy movement
+
+5.find tutorial for c assets... dont be dumb again
