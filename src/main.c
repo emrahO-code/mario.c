@@ -39,6 +39,18 @@ int main()
 	floor.width = 10000;
 	floor.height = 100;
 
+    Rectangle wall;
+	wall.x = 200;
+	wall.y = 400;
+	wall.width = 100;
+	wall.height = 100;
+
+    Rectangle wall1;
+	wall1.x = 500;
+	wall1.y = 400;
+	wall1.width = 100;
+	wall1.height = 100;
+
 	Player player = create_player();
 
     //Init Window
@@ -86,11 +98,13 @@ int main()
 		ClearBackground(RAYWHITE);
 
 		BeginMode2D(camera);
-		DrawRectangleRec(floor, BROWN);
         draw_player(player);
         for(int i=0; i<4;i++){
             draw_platform(platforms[i]);
         }
+        DrawRectangleRec(wall, BROWN);
+        DrawRectangleRec(wall1, BROWN);
+		DrawRectangleRec(floor, BROWN);
 		EndMode2D();
 		EndDrawing();
 	}
