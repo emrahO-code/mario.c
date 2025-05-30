@@ -7,9 +7,9 @@
 int main()
 {
     //Constants
-    const int JUMPVELOCITY = -400;
-	const int WALKSPEED = 100;
-	const int GRAVITY = 500;
+    const int JUMPVELOCITY = -500;
+	const int WALKSPEED = 200;
+	const int GRAVITY = 1000;
     const int PLATFORM_COUNT = 4;
     const int COLLISION_RADIUS = 200;
 
@@ -91,7 +91,6 @@ int main()
         for(int i=0; i<4;i++){
             draw_platform(platforms[i]);
         }
-
 		EndMode2D();
 		EndDrawing();
 	}

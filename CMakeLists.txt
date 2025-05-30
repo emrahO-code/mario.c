@@ -6,6 +6,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # Include headers
 include_directories(include)
+include_directories(assets)
 
 # Source files
 file(GLOB_RECURSE SOURCES "src/*.c")

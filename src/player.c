@@ -5,7 +5,7 @@ Player create_player(){
     Rectangle rectangle;
     rectangle.x = 0;
     rectangle.y = 400;
-    rectangle.width = 35;
+    rectangle.width = 40;
     rectangle.height = 70;
     Vector2 velocity;
     velocity.x = 0;
@@ -16,6 +16,6 @@ Player create_player(){
     return player;
 }
 
-void draw_player(Player p){
+void draw_player(Player p) {
     DrawRectangleRec(p.rectangle, GRAY);
 }
