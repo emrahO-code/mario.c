@@ -1,7 +1,3 @@
-//
-// Created by emraho on 7/17/25.
-//
-
 #ifndef LEVEL_H
 #define LEVEL_H
 
@@ -17,7 +13,10 @@ typedef enum {
     TILE_BRICK,
     TILE_QUESTION,
     TILE_PIPE_TOP,
-    TILE_PIPE_BODY
+    TILE_PIPE_BODY,
+    TILE_FLAGPOLE,
+    TILE_FLAG,
+    TILE_CASTLE
 } TileType;
 
 typedef struct {
@@ -31,4 +30,4 @@ void draw_level(Level level, Camera2D camera);
 bool check_tile_collision(Rectangle player_rect, Level level, int* tile_x, int* tile_y);
 TileType get_tile_at_position(Level level, float x, float y);
 
-#endif //LEVEL_H
+#endif

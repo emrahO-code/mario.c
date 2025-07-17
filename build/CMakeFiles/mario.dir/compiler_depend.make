@@ -18,17 +18,31 @@ CMakeFiles/mario.dir/src/item.c.o: /home/emraho/Projects/mario.c/src/item.c \
 
 CMakeFiles/mario.dir/src/level.c.o: /home/emraho/Projects/mario.c/src/level.c \
   /home/emraho/Projects/mario.c/include/level.h \
+  /usr/include/bits/floatn-common.h \
+  /usr/include/bits/floatn.h \
   /usr/include/bits/libc-header-start.h \
   /usr/include/bits/long-double.h \
+  /usr/include/bits/stdio_lim.h \
+  /usr/include/bits/time64.h \
   /usr/include/bits/timesize.h \
+  /usr/include/bits/types.h \
+  /usr/include/bits/types/FILE.h \
+  /usr/include/bits/types/__FILE.h \
+  /usr/include/bits/types/__fpos64_t.h \
+  /usr/include/bits/types/__fpos_t.h \
   /usr/include/bits/types/__locale_t.h \
+  /usr/include/bits/types/__mbstate_t.h \
+  /usr/include/bits/types/cookie_io_functions_t.h \
   /usr/include/bits/types/locale_t.h \
+  /usr/include/bits/types/struct_FILE.h \
+  /usr/include/bits/typesizes.h \
   /usr/include/bits/wordsize.h \
   /usr/include/features-time64.h \
   /usr/include/features.h \
   /usr/include/gnu/stubs-lp64.h \
   /usr/include/gnu/stubs.h \
   /usr/include/stdc-predef.h \
+  /usr/include/stdio.h \
   /usr/include/string.h \
   /usr/include/strings.h \
   /usr/include/sys/cdefs.h \
@@ -185,55 +199,59 @@ CMakeFiles/mario.dir/src/game.c.o:
 
 /usr/lib/libgcc_s.so.1:
 
-/home/emraho/Projects/mario.c/src/main.c:
-
-/usr/lib/crti.o:
-
-/usr/include/strings.h:
-
-/usr/local/include/raylib.h:
-
-/usr/include/bits/libc-header-start.h:
-
-/home/emraho/Projects/mario.c/src/block.c:
-
-/usr/include/bits/types/cookie_io_functions_t.h:
-
-/usr/include/bits/typesizes.h:
-
-/usr/include/gnu/stubs-lp64.h:
-
-/usr/include/features-time64.h:
-
 /usr/lib/libOpenGL.so.0:
 
 /usr/include/bits/types/__fpos64_t.h:
 
-/usr/include/bits/wordsize.h:
+/usr/include/features-time64.h:
 
-/usr/include/sys/cdefs.h:
+/usr/include/gnu/stubs-lp64.h:
 
-/usr/include/stdc-predef.h:
+/usr/lib/ld-linux-aarch64.so.1:
+
+/usr/include/bits/types/FILE.h:
+
+/usr/include/bits/types/__FILE.h:
 
 /usr/local/lib/libraylib.so:
 
 /usr/include/bits/timesize.h:
 
-/home/emraho/Projects/mario.c/include/level.h:
+/usr/include/stdc-predef.h:
 
-/usr/include/bits/floatn.h:
+/usr/include/sys/cdefs.h:
 
-/usr/lib/gcc/aarch64-unknown-linux-gnu/14.2.1/include/stdarg.h:
+/usr/include/bits/wordsize.h:
 
-/usr/lib/gcc/aarch64-unknown-linux-gnu/14.2.1/include/stdbool.h:
+/usr/include/bits/typesizes.h:
+
+/home/emraho/Projects/mario.c/src/block.c:
+
+/usr/include/bits/types/cookie_io_functions_t.h:
+
+/usr/include/bits/time64.h:
+
+/usr/include/string.h:
+
+/usr/include/bits/stdio_lim.h:
 
 /usr/include/bits/long-double.h:
 
 /usr/include/bits/fp-logb.h:
 
-/usr/include/features.h:
+/home/emraho/Projects/mario.c/include/level.h:
 
-/home/emraho/Projects/mario.c/include/camera.h:
+/usr/lib/gcc/aarch64-unknown-linux-gnu/14.2.1/include/stdbool.h:
+
+/usr/local/include/raylib.h:
+
+/usr/include/bits/libc-header-start.h:
+
+/usr/include/strings.h:
+
+/usr/include/bits/types/struct_FILE.h:
+
+/usr/include/features.h:
 
 CMakeFiles/mario.dir/src/item.c.o:
 
@@ -243,39 +261,35 @@ CMakeFiles/mario.dir/src/item.c.o:
 
 /usr/include/bits/flt-eval-method.h:
 
-/usr/include/bits/mathcalls-helper-functions.h:
-
-/home/emraho/Projects/mario.c/src/item.c:
-
-/usr/include/bits/floatn-common.h:
-
-/usr/lib/libX11.so.6:
-
-/home/emraho/Projects/mario.c/include/player.h:
-
-/usr/include/bits/stdio_lim.h:
-
-/usr/include/string.h:
-
-/usr/include/bits/time64.h:
-
 /usr/lib/libc_nonshared.a:
 
 /usr/include/bits/types.h:
 
-/usr/lib/ld-linux-aarch64.so.1:
-
-/usr/include/bits/types/FILE.h:
-
-/usr/include/bits/types/__FILE.h:
+/usr/include/bits/floatn-common.h:
 
 /usr/include/bits/types/__mbstate_t.h:
 
-/usr/include/bits/types/struct_FILE.h:
+/usr/lib/gcc/aarch64-unknown-linux-gnu/14.2.1/include/stdarg.h:
+
+/usr/include/bits/floatn.h:
 
 /home/emraho/Projects/mario.c/src/level.c:
 
 /usr/include/stdio.h:
+
+/home/emraho/Projects/mario.c/src/main.c:
+
+/home/emraho/Projects/mario.c/src/item.c:
+
+/usr/include/bits/mathcalls-helper-functions.h:
+
+/usr/lib/crti.o:
+
+/home/emraho/Projects/mario.c/include/camera.h:
+
+/usr/lib/libX11.so.6:
+
+/home/emraho/Projects/mario.c/include/player.h:
 
 /usr/lib/libGLdispatch.so.0:
 

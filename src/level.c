@@ -10,103 +10,151 @@ Level create_world_1_1(void) {
     // Initialize everything as empty
     memset(level.tiles, TILE_EMPTY, sizeof(level.tiles));
 
-    // Ground level - bottom 2 rows (rows 13-14)
+    // Calculate ground position to be at bottom of screen
+    // Screen height = 600, so ground should be at y = 600 - (2 * TILE_SIZE) = 536
+    // In tile coordinates: ground_y = 536 / TILE_SIZE = 16.75, so use tiles 17-18
+    int ground_row1 = LEVEL_HEIGHT - 1;  // Bottom row
+    int ground_row2 = LEVEL_HEIGHT - 2;  // Second from bottom
+
+    // Ground level - bottom 2 rows
     for (int x = 0; x < LEVEL_WIDTH; x++) {
-        level.tiles[LEVEL_HEIGHT-1][x] = TILE_GROUND;
-        level.tiles[LEVEL_HEIGHT-2][x] = TILE_GROUND;
+        level.tiles[ground_row1][x] = TILE_GROUND;
+        level.tiles[ground_row2][x] = TILE_GROUND;
     }
 
-    // World 1-1 specific layout (scaled down to fit better)
+    // All other elements positioned relative to ground (9 tiles above ground = row 4)
+    int block_level = ground_row2 - 5;  // 9 tiles above ground
+    int high_block_level = ground_row2 - 9;  // 13 tiles above ground
 
-    // Test: Put some blocks close to spawn
-    level.tiles[9][5] = TILE_QUESTION;  // Very close to start
-    level.tiles[9][8] = TILE_BRICK;     // Also close
-    level.tiles[5][10] = TILE_QUESTION; // Higher up, close
+    // Accurate World 1-1 layout (scaled to fit better in our level)
 
-    // First question block at x=16
-    level.tiles[9][16] = TILE_QUESTION;
+    // Question block at x=16 (contains Mushroom/Fire Flower)
+    level.tiles[block_level][28] = TILE_QUESTION;
 
-    // Group of blocks at x=20-22
-    level.tiles[9][20] = TILE_QUESTION;
-    level.tiles[9][21] = TILE_BRICK;
-    level.tiles[9][22] = TILE_QUESTION;
-    level.tiles[5][20] = TILE_QUESTION; // Higher question block
+    // Group of blocks at x=20-22 (Q-Brick-Q with hidden coin block above)
+    level.tiles[block_level][32] = TILE_BRICK;
+    level.tiles[block_level][33] = TILE_QUESTION;  // Contains coin
+    level.tiles[block_level][34] = TILE_BRICK;
+    level.tiles[block_level][35] = TILE_QUESTION;  // Contains coin
+    level.tiles[block_level][36] = TILE_BRICK;
+    level.tiles[high_block_level][34] = TILE_QUESTION;  // Hidden coin block (invisible)
 
-    // First brick block group at x=30-35 (moved much closer)
-    level.tiles[9][30] = TILE_BRICK;
-    level.tiles[9][31] = TILE_BRICK;
-    level.tiles[9][32] = TILE_BRICK;
-    level.tiles[9][33] = TILE_BRICK;
-    level.tiles[9][34] = TILE_BRICK;
-    level.tiles[9][35] = TILE_BRICK;
-
-    // Question block above bricks
-    level.tiles[5][31] = TILE_QUESTION;
-    level.tiles[5][34] = TILE_QUESTION;
-
-    // Second group of bricks at x=40-42
-    level.tiles[9][40] = TILE_BRICK;
-    level.tiles[9][41] = TILE_BRICK;
-    level.tiles[9][42] = TILE_BRICK;
-
-    // Higher brick blocks
-    level.tiles[5][40] = TILE_BRICK;
-    level.tiles[5][41] = TILE_BRICK;
-    level.tiles[5][42] = TILE_BRICK;
-
-    // Even higher brick block
-    level.tiles[1][41] = TILE_BRICK;
-
-    // Question block at x=50
-    level.tiles[9][50] = TILE_QUESTION;
-
-    // More bricks at x=55-57
-    level.tiles[9][55] = TILE_BRICK;
-    level.tiles[9][56] = TILE_BRICK;
-    level.tiles[9][57] = TILE_BRICK;
-
-    // Question block at x=65
-    level.tiles[9][65] = TILE_QUESTION;
-    level.tiles[5][65] = TILE_QUESTION;
-
-    // Stairs near the end (x=70-75)
-    // First step
-    level.tiles[12][70] = TILE_GROUND;
-
-    // Second step
-    level.tiles[12][71] = TILE_GROUND;
-    level.tiles[11][71] = TILE_GROUND;
-
-    // Third step
-    level.tiles[12][72] = TILE_GROUND;
-    level.tiles[11][72] = TILE_GROUND;
-    level.tiles[10][72] = TILE_GROUND;
-
-    // Fourth step (highest)
-    level.tiles[12][73] = TILE_GROUND;
-    level.tiles[11][73] = TILE_GROUND;
-    level.tiles[10][73] = TILE_GROUND;
-    level.tiles[9][73] = TILE_GROUND;
-
-    // Stairs going down
-    level.tiles[12][74] = TILE_GROUND;
-    level.tiles[11][74] = TILE_GROUND;
-    level.tiles[10][74] = TILE_GROUND;
-
-    level.tiles[12][75] = TILE_GROUND;
-    level.tiles[11][75] = TILE_GROUND;
-
-    level.tiles[12][76] = TILE_GROUND;
-
-    // Gap in ground from x=80-85 (pit)
-    for (int x = 80; x <= 85; x++) {
-        level.tiles[LEVEL_HEIGHT-1][x] = TILE_EMPTY;
-        level.tiles[LEVEL_HEIGHT-2][x] = TILE_EMPTY;
+    // First pipe at x=35 (can enter)
+    for(int x = 40; x < 42; x++) {
+    level.tiles[ground_row2 - 2][x] = TILE_PIPE_TOP;
+    level.tiles[ground_row2 - 1][x] = TILE_PIPE_BODY;
+    // Question block at x=41
+    }
+    for(int x = 53; x < 55; x++) {
+    level.tiles[ground_row2 - 3][x] = TILE_PIPE_TOP;
+    level.tiles[ground_row2 - 2][x] = TILE_PIPE_BODY;
+    level.tiles[ground_row2 - 1][x] = TILE_PIPE_BODY;
     }
 
-    // Final pipe at x=90
-    level.tiles[11][90] = TILE_PIPE_TOP;
-    level.tiles[12][90] = TILE_PIPE_BODY;
+    for(int x = 61; x < 63; x++) {
+        level.tiles[ground_row2 - 4][x] = TILE_PIPE_TOP;
+        level.tiles[ground_row2 - 3][x] = TILE_PIPE_BODY;
+        level.tiles[ground_row2 - 2][x] = TILE_PIPE_BODY;
+        level.tiles[ground_row2 - 1][x] = TILE_PIPE_BODY;
+    }
+
+    for(int x = 73; x < 75; x++) {
+        level.tiles[ground_row2 - 4][x] = TILE_PIPE_TOP;
+        level.tiles[ground_row2 - 3][x] = TILE_PIPE_BODY;
+        level.tiles[ground_row2 - 2][x] = TILE_PIPE_BODY;
+        level.tiles[ground_row2 - 1][x] = TILE_PIPE_BODY;
+    }
+
+    for (int x = 85; x <= 86; x++) {
+        level.tiles[ground_row1][x] = TILE_EMPTY;
+        level.tiles[ground_row2][x] = TILE_EMPTY;
+    }
+
+    // More bricks at x=85-87
+    level.tiles[block_level][93] = TILE_BRICK;
+    level.tiles[block_level][94] = TILE_QUESTION;
+    level.tiles[block_level][95] = TILE_BRICK;
+
+    // Question blocks at x=92-93
+    for(int x = 96; x < 103; x++) {
+    level.tiles[high_block_level][x] = TILE_BRICK;
+    }
+    for (int x = 102; x <= 104; x++) {
+        level.tiles[ground_row1][x] = TILE_EMPTY;
+        level.tiles[ground_row2][x] = TILE_EMPTY;
+    }
+
+    // Question block at x=110
+    level.tiles[block_level][110] = TILE_QUESTION;  // Contains coin
+
+    // More bricks at x=115-117
+    level.tiles[block_level][115] = TILE_BRICK;
+    level.tiles[block_level][116] = TILE_BRICK;
+    level.tiles[block_level][117] = TILE_BRICK;
+
+    // Final question block at x=122
+    level.tiles[block_level][122] = TILE_QUESTION;  // Contains coin
+
+    // Staircase (classic 4-step staircase) at x=130-136
+    // Step 1
+    level.tiles[ground_row2 - 1][130] = TILE_GROUND;
+    // Step 2
+    level.tiles[ground_row2 - 1][131] = TILE_GROUND;
+    level.tiles[ground_row2 - 2][131] = TILE_GROUND;
+    // Step 3
+    level.tiles[ground_row2 - 1][132] = TILE_GROUND;
+    level.tiles[ground_row2 - 2][132] = TILE_GROUND;
+    level.tiles[ground_row2 - 3][132] = TILE_GROUND;
+    // Step 4 (highest)
+    level.tiles[ground_row2 - 1][133] = TILE_GROUND;
+    level.tiles[ground_row2 - 2][133] = TILE_GROUND;
+    level.tiles[ground_row2 - 3][133] = TILE_GROUND;
+    level.tiles[ground_row2 - 4][133] = TILE_GROUND;
+
+    // Staircase going down
+    level.tiles[ground_row2 - 1][134] = TILE_GROUND;
+    level.tiles[ground_row2 - 2][134] = TILE_GROUND;
+    level.tiles[ground_row2 - 3][134] = TILE_GROUND;
+
+    level.tiles[ground_row2 - 1][135] = TILE_GROUND;
+    level.tiles[ground_row2 - 2][135] = TILE_GROUND;
+
+    level.tiles[ground_row2 - 1][136] = TILE_GROUND;
+
+    // Final large pit at x=140-147
+    for (int x = 140; x <= 147; x++) {
+        level.tiles[ground_row1][x] = TILE_EMPTY;
+        level.tiles[ground_row2][x] = TILE_EMPTY;
+    }
+
+    // FLAGPOLE AREA at x=152
+    // Flagpole (represented as pipe for now - we'll need to add TILE_FLAGPOLE later)
+    for (int y = ground_row2 - 10; y <= ground_row2 - 1; y++) {
+        level.tiles[y][152] = TILE_PIPE_BODY;  // Flagpole
+    }
+    level.tiles[ground_row2 - 10][152] = TILE_PIPE_TOP;  // Flag at top
+
+    // CASTLE AREA at x=158-165
+    // Castle base
+    for (int x = 158; x <= 165; x++) {
+        level.tiles[ground_row2 - 1][x] = TILE_GROUND;
+        level.tiles[ground_row2 - 2][x] = TILE_GROUND;
+        level.tiles[ground_row2 - 3][x] = TILE_GROUND;
+        level.tiles[ground_row2 - 4][x] = TILE_GROUND;
+    }
+
+    // Castle towers
+    level.tiles[ground_row2 - 5][159] = TILE_GROUND;   // Left tower
+    level.tiles[ground_row2 - 6][159] = TILE_GROUND;
+    level.tiles[ground_row2 - 5][161] = TILE_GROUND;   // Middle tower
+    level.tiles[ground_row2 - 6][161] = TILE_GROUND;
+    level.tiles[ground_row2 - 7][161] = TILE_GROUND;
+    level.tiles[ground_row2 - 5][163] = TILE_GROUND;   // Right tower
+    level.tiles[ground_row2 - 6][163] = TILE_GROUND;
+
+    // Castle door
+    level.tiles[ground_row2 - 3][161] = TILE_EMPTY;   // Door opening
+    level.tiles[ground_row2 - 2][161] = TILE_EMPTY;
 
     return level;
 }
@@ -120,9 +168,6 @@ void draw_level(Level level, Camera2D camera) {
             for (int x = 0; x < LEVEL_WIDTH; x++) {
                 if (level.tiles[y][x] != TILE_EMPTY) {
                     tile_count++;
-                    if (tile_count < 10) { // Print first 10 tiles
-                        printf("Tile at (%d,%d): type %d\n", x, y, level.tiles[y][x]);
-                    }
                 }
             }
         }
@@ -148,6 +193,9 @@ void draw_level(Level level, Camera2D camera) {
                     case TILE_QUESTION: tile_color = YELLOW; break;
                     case TILE_PIPE_TOP: tile_color = GREEN; break;
                     case TILE_PIPE_BODY: tile_color = DARKGREEN; break;
+                    case TILE_FLAGPOLE: tile_color = GRAY; break;
+                    case TILE_FLAG: tile_color = RED; break;
+                    case TILE_CASTLE: tile_color = LIGHTGRAY; break;
                     default: tile_color = WHITE; break;
                 }
 
@@ -155,6 +203,13 @@ void draw_level(Level level, Camera2D camera) {
 
                 // Debug: Draw tile borders
                 DrawRectangleLinesEx(tile_rect, 1, BLACK);
+
+                // Special drawing for flagpole
+                if (level.tiles[y][x] == TILE_PIPE_TOP && x == 152) {
+                    // Draw flag at top of pole
+                    Rectangle flag_rect = {x * TILE_SIZE + TILE_SIZE/2, y * TILE_SIZE, TILE_SIZE/2, TILE_SIZE/2};
+                    DrawRectangleRec(flag_rect, RED);
+                }
             }
         }
     }

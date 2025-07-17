@@ -96,9 +96,9 @@ bool check_horizontal_collision(Player* player, Level level, float dt) {
 int main()
 {
     //Constants
-    const int JUMPVELOCITY = -500;
-    const int WALKSPEED = 200;
-    const int GRAVITY = 1000;
+    const int JUMPVELOCITY = -700;
+    const int WALKSPEED = 300;
+    const int GRAVITY = 1300;
 
     //SCREENSIZE INIT AND CAMERA
     Vector2 SCREENSIZE;
@@ -111,8 +111,8 @@ int main()
     Player player = create_player();
 
     // Fix player starting position - place above ground
-    player.rectangle.x = 64; // Start a bit away from left edge
-    player.rectangle.y = (LEVEL_HEIGHT - 3) * TILE_SIZE; // Above ground level (row 12)
+    player.rectangle.x = 380; // Start a bit away from left edge
+    player.rectangle.y = (LEVEL_HEIGHT - 4) * TILE_SIZE; // Above ground level
 
     //Init Window
     InitWindow(SCREENSIZE.x, SCREENSIZE.y, "Mario - World 1-1");
@@ -154,7 +154,7 @@ int main()
         }
 
         // Update camera to follow player
-        camera.target = (Vector2){player.rectangle.x + player.rectangle.width/2, player.rectangle.y + player.rectangle.height/2};
+        camera.target = (Vector2){player.rectangle.x + player.rectangle.width/2, 180};
 
         // Drawing
         BeginDrawing();
