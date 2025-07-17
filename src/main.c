@@ -2,112 +2,184 @@
 #include <raylib.h>
 #include <player.h>
 #include <camera.h>
-#include <platform.h>
+#include <level.h>
+
+bool check_level_collision(Player* player, Level level, float dt) {
+    bool on_ground = false;
+
+    // Check collision with level tiles
+    Rectangle future_rect = player->rectangle;
+    future_rect.y += player->velocity.y * dt;
+
+    // Check vertical collision (falling/jumping)
+    if (player->velocity.y > 0) { // Falling
+        // Check bottom collision
+        float bottom_y = future_rect.y + future_rect.height;
+        float left_x = future_rect.x;
+        float right_x = future_rect.x + future_rect.width;
+
+        // Check tiles under player's feet
+        for (float x = left_x; x < right_x; x += TILE_SIZE/2) {
+            TileType tile = get_tile_at_position(level, x, bottom_y);
+            if (tile != TILE_EMPTY) {
+                // Calculate exact collision point
+                int tile_y = (int)(bottom_y / TILE_SIZE);
+                player->rectangle.y = tile_y * TILE_SIZE - player->rectangle.height;
+                player->velocity.y = 0;
+                on_ground = true;
+                break;
+            }
+        }
+    } else if (player->velocity.y < 0) { // Jumping up
+        // Check top collision
+        float top_y = future_rect.y;
+        float left_x = future_rect.x;
+        float right_x = future_rect.x + future_rect.width;
+
+        // Check tiles above player's head
+        for (float x = left_x; x < right_x; x += TILE_SIZE/2) {
+            TileType tile = get_tile_at_position(level, x, top_y);
+            if (tile != TILE_EMPTY) {
+                // Hit ceiling
+                int tile_y = (int)(top_y / TILE_SIZE);
+                player->rectangle.y = (tile_y + 1) * TILE_SIZE;
+                player->velocity.y = 0;
+                break;
+            }
+        }
+    }
+
+    return on_ground;
+}
+
+bool check_horizontal_collision(Player* player, Level level, float dt) {
+    Rectangle future_rect = player->rectangle;
+    future_rect.x += player->velocity.x * dt;
+
+    // Check left world boundary (invisible wall)
+    if (future_rect.x < 0) {
+        player->rectangle.x = 0;
+        return true;
+    }
+
+    // Check left and right collision
+    float top_y = future_rect.y;
+    float bottom_y = future_rect.y + future_rect.height;
+
+    if (player->velocity.x > 0) { // Moving right
+        float right_x = future_rect.x + future_rect.width;
+
+        for (float y = top_y; y < bottom_y; y += TILE_SIZE/2) {
+            TileType tile = get_tile_at_position(level, right_x, y);
+            if (tile != TILE_EMPTY) {
+                int tile_x = (int)(right_x / TILE_SIZE);
+                player->rectangle.x = tile_x * TILE_SIZE - player->rectangle.width;
+                return true;
+            }
+        }
+    } else if (player->velocity.x < 0) { // Moving left
+        float left_x = future_rect.x;
+
+        for (float y = top_y; y < bottom_y; y += TILE_SIZE/2) {
+            TileType tile = get_tile_at_position(level, left_x, y);
+            if (tile != TILE_EMPTY) {
+                int tile_x = (int)(left_x / TILE_SIZE);
+                player->rectangle.x = (tile_x + 1) * TILE_SIZE;
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
 
 int main()
 {
     //Constants
     const int JUMPVELOCITY = -500;
-	const int WALKSPEED = 200;
-	const int GRAVITY = 1000;
-    const int PLATFORM_COUNT = 4;
-    const int COLLISION_RADIUS = 200;
+    const int WALKSPEED = 200;
+    const int GRAVITY = 1000;
 
     //SCREENSIZE INIT AND CAMERA
     Vector2 SCREENSIZE;
     SCREENSIZE.x = 800;
     SCREENSIZE.y = 600;
-	Camera2D camera = create_camera((Vector2) {SCREENSIZE.x/2,SCREENSIZE.y/2});
+    Camera2D camera = create_camera((Vector2) {SCREENSIZE.x/2, SCREENSIZE.y/2});
 
-    //Objects creation
-    Vector2 platform_size;
-    platform_size.x = 100;
-    platform_size.y = 20;
+    // Create level and player
+    Level level = create_world_1_1();
+    Player player = create_player();
 
-    Color platform_color = BROWN;
-
-    Platform platforms[] = {
-       {(Vector2){100,400},platform_size,platform_color},
-       {(Vector2){300,400},platform_size,platform_color},
-       {(Vector2){500,400},platform_size,platform_color},
-       {(Vector2){700,400},platform_size,platform_color},
-    };
-
-	Rectangle floor;
-	floor.x = 0;
-	floor.y = 500;
-	floor.width = 10000;
-	floor.height = 100;
-
-    Rectangle wall;
-	wall.x = 200;
-	wall.y = 400;
-	wall.width = 100;
-	wall.height = 100;
-
-    Rectangle wall1;
-	wall1.x = 500;
-	wall1.y = 400;
-	wall1.width = 100;
-	wall1.height = 100;
-
-	Player player = create_player();
+    // Fix player starting position - place above ground
+    player.rectangle.x = 64; // Start a bit away from left edge
+    player.rectangle.y = (LEVEL_HEIGHT - 3) * TILE_SIZE; // Above ground level (row 12)
 
     //Init Window
-	InitWindow(SCREENSIZE.x, SCREENSIZE.y, "Mario");
-	SetTargetFPS(60);
+    InitWindow(SCREENSIZE.x, SCREENSIZE.y, "Mario - World 1-1");
+    SetTargetFPS(60);
 
-    //Main drawing loop
-	while(!WindowShouldClose()){
-		float dt = GetFrameTime();
+    //Main game loop
+    while(!WindowShouldClose()) {
+        float dt = GetFrameTime();
 
-		player.velocity.y += GRAVITY*dt;
+        // Apply gravity
+        player.velocity.y += GRAVITY * dt;
 
-        //Collisions
-		bool OnGround = false;
-        float correctedY;
-        float correctedX;
-		if(CheckCollisionRecs(player.rectangle,floor)){
-			player.rectangle.y = floor.y-player.rectangle.height;
-			player.velocity.y =0;
-			OnGround = true;
-		}else if (check_plat_collision(player, platforms, PLATFORM_COUNT, COLLISION_RADIUS, &correctedY, &correctedX)) {
-            player.rectangle.y = correctedY;
-            player.velocity.y = 0;
-            OnGround = true;
+        // Handle input
+        player.velocity.x = 0; // Reset horizontal velocity
+
+        if (IsKeyDown(KEY_A)) {
+            player.velocity.x = -WALKSPEED;
+        }
+        if (IsKeyDown(KEY_D)) {
+            player.velocity.x = WALKSPEED;
         }
 
-        //Key Movements
-		if (OnGround &&IsKeyDown(KEY_W)){
-			player.velocity.y += JUMPVELOCITY;
-		}
-		if (IsKeyDown(KEY_A)) {
-                player.rectangle.x -= WALKSPEED*dt;
-        }
-		if (IsKeyDown(KEY_D)) {
-                player.rectangle.x += WALKSPEED*dt;
+        // Check horizontal collision and move horizontally
+        if (!check_horizontal_collision(&player, level, dt)) {
+            player.rectangle.x += player.velocity.x * dt;
         }
 
-        player.rectangle.y += player.velocity.y*dt;
+        // Check vertical collision and handle jumping
+        bool on_ground = check_level_collision(&player, level, dt);
 
-        //Camera Moving
-		camera.target = (Vector2){player.rectangle.x + player.rectangle.width/2, 300};
+        // Apply vertical movement if no collision
+        if (!on_ground && player.velocity.y != 0) {
+            player.rectangle.y += player.velocity.y * dt;
+        }
 
-        //Object/Drawing Generation
-		BeginDrawing();
-		ClearBackground(RAYWHITE);
+        // Jump only when on ground
+        if (on_ground && IsKeyDown(KEY_W)) {
+            player.velocity.y = JUMPVELOCITY;
+        }
 
-		BeginMode2D(camera);
+        // Update camera to follow player
+        camera.target = (Vector2){player.rectangle.x + player.rectangle.width/2, player.rectangle.y + player.rectangle.height/2};
+
+        // Drawing
+        BeginDrawing();
+        ClearBackground(SKYBLUE); // Sky color like Mario
+
+        BeginMode2D(camera);
+
+        // Draw level
+        draw_level(level, camera);
+
+        // Draw player
         draw_player(player);
-        for(int i=0; i<4;i++){
-            draw_platform(platforms[i]);
-        }
-        DrawRectangleRec(wall, BROWN);
-        DrawRectangleRec(wall1, BROWN);
-		DrawRectangleRec(floor, BROWN);
-		EndMode2D();
-		EndDrawing();
-	}
-	CloseWindow();
-	return 0;
+
+        EndMode2D();
+
+        // Draw UI elements here (outside camera)
+        DrawText("World 1-1", 10, 10, 20, BLACK);
+        DrawText("WASD to move and jump", 10, 40, 16, BLACK);
+        DrawText(TextFormat("Player X: %.0f, Y: %.0f", player.rectangle.x, player.rectangle.y), 10, 70, 16, BLACK);
+        DrawText(TextFormat("Camera X: %.0f, Y: %.0f", camera.target.x, camera.target.y), 10, 100, 16, BLACK);
+        DrawText(TextFormat("Tiles X: %d-%d", (int)((camera.target.x - 400) / TILE_SIZE), (int)((camera.target.x + 400) / TILE_SIZE)), 10, 130, 16, BLACK);
+
+        EndDrawing();
+    }
+
+    CloseWindow();
+    return 0;
 }

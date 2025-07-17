@@ -1,27 +1,27 @@
 cmake_minimum_required(VERSION 3.10)
-project(mario C)
+project(mario_game C)
 
-set(CMAKE_C_STANDARD 99)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+file(GLOB sources "src/*.c")
 
-# Include headers
-include_directories(include)
-include_directories(assets)
-
-# Source files
-file(GLOB_RECURSE SOURCES "src/*.c")
-
-# Find and link raylib
+set(raylib_DIR "/usr/local/lib/cmake/raylib")
+set(raylib_LIBRARY "/usr/local/lib/libraylib.so")
+# Find raylib package
 find_package(raylib REQUIRED)
-add_executable(mario ${SOURCES})
-target_link_libraries(mario raylib)
 
-# macOS-specific frameworks
-if(APPLE)
-    target_link_libraries(mario
-            "-framework OpenGL"
-            "-framework Cocoa"
-            "-framework IOKit"
-            "-framework CoreVideo"
-    )
+# Create executable named 'mario' from source file 'mario.c'
+add_executable(mario ${sources})
+
+# Link raylib library
+target_link_libraries(mario PRIVATE raylib)
+
+# Set C standard to C11 (optional)
+set_target_properties(mario PROPERTIES
+        C_STANDARD 11
+        C_STANDARD_REQUIRED ON
+)
+target_include_directories(mario PRIVATE include)
+
+# On Linux, link pthread, dl, and math libraries explicitly
+if(UNIX AND NOT APPLE)
+    target_link_libraries(mario PRIVATE pthread dl m)
 endif()

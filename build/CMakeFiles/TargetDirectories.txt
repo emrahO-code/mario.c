@@ -1,0 +1,3 @@
+/home/emraho/Projects/mario.c/build/CMakeFiles/mario.dir
+/home/emraho/Projects/mario.c/build/CMakeFiles/edit_cache.dir
+/home/emraho/Projects/mario.c/build/CMakeFiles/rebuild_cache.dir
