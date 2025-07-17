@@ -6,6 +6,7 @@ Level create_world_1_1(void) {
     Level level;
     level.width = LEVEL_WIDTH;
     level.height = LEVEL_HEIGHT;
+    level.coin_count = 0;
 
 
     // Don't load texture here - it will be loaded after InitWindow()
@@ -253,6 +254,9 @@ void draw_level(Level level, Camera2D camera) {
                         case TILE_QUESTION:
                             source_rect = (Rectangle){298, 78, 16, 16};   // Third tile in top row
                             break;
+                        case TILE_QUESTION_USED:
+                            source_rect = (Rectangle){349, 78, 16, 16};   // Third tile in top row
+                            break;
                         case TILE_PIPE_TOP_LEFT:
                             source_rect = (Rectangle){119, 196, 16, 16};   // Fourth tile in top row
                             break;
@@ -336,6 +340,34 @@ bool check_tile_collision(Rectangle player_rect, Level level, int* tile_x, int* 
     }
 
     return false;
+}
+
+bool interact_with_block(Level* level, int tile_x, int tile_y) {
+    if (tile_x < 0 || tile_x >= LEVEL_WIDTH || tile_y < 0 || tile_y >= LEVEL_HEIGHT) {
+        return false;
+    }
+
+    TileType block_type = level->tiles[tile_y][tile_x];
+
+    switch (block_type) {
+    case TILE_BRICK:
+            level->tiles[tile_y][tile_x] = TILE_EMPTY;
+            return true; // Block was destroyed
+        break;
+
+    case TILE_QUESTION:
+        level->tiles[tile_y][tile_x] = TILE_QUESTION_USED;
+        level->coin_count++;
+        return false; // Block remains but changed
+        break;
+
+    case TILE_QUESTION_USED:
+        return false;
+        break;
+
+    default:
+        return false;
+    }
 }
 
 TileType get_tile_at_position(Level level, float x, float y) {

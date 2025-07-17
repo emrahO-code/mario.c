@@ -4,7 +4,7 @@
 #include <camera.h>
 #include <level.h>
 
-bool check_level_collision(Player* player, Level level, float dt) {
+bool check_level_collision(Player* player, Level* level, float dt) {
     bool on_ground = false;
 
     // Check collision with level tiles
@@ -20,7 +20,7 @@ bool check_level_collision(Player* player, Level level, float dt) {
 
         // Check tiles under player's feet
         for (float x = left_x; x < right_x; x += TILE_SIZE/2) {
-            TileType tile = get_tile_at_position(level, x, bottom_y);
+            TileType tile = get_tile_at_position(*level, x, bottom_y);
             if (tile != TILE_EMPTY) {
                 // Calculate exact collision point
                 int tile_y = (int)(bottom_y / TILE_SIZE);
@@ -38,9 +38,18 @@ bool check_level_collision(Player* player, Level level, float dt) {
 
         // Check tiles above player's head
         for (float x = left_x; x < right_x; x += TILE_SIZE/2) {
-            TileType tile = get_tile_at_position(level, x, top_y);
+            TileType tile = get_tile_at_position(*level, x, top_y);
             if (tile != TILE_EMPTY) {
-                // Hit ceiling
+                // Hit ceiling - check for interactive blocks
+                int block_x = (int)(x / TILE_SIZE);
+                int block_y = (int)(top_y / TILE_SIZE);
+
+                // Try to interact with the block
+                if (tile == TILE_BRICK || tile == TILE_QUESTION || tile == TILE_QUESTION_USED) {
+                    interact_with_block(level, block_x, block_y);
+                }
+
+                // Stop upward movement
                 int tile_y = (int)(top_y / TILE_SIZE);
                 player->rectangle.y = (tile_y + 1) * TILE_SIZE;
                 player->velocity.y = 0;
@@ -143,7 +152,7 @@ int main()
         }
 
         // Check vertical collision and handle jumping
-        bool on_ground = check_level_collision(&player, level, dt);
+        bool on_ground = check_level_collision(&player, &level, dt);
 
         // Apply vertical movement if no collision
         if (!on_ground && player.velocity.y != 0) {
@@ -177,9 +186,7 @@ int main()
         // Draw UI elements here (outside camera)
         DrawText("World 1-1", 10, 10, 20, BLACK);
         DrawText("WASD to move and jump", 10, 40, 16, BLACK);
-        DrawText(TextFormat("Player X: %.0f, Y: %.0f", player.rectangle.x, player.rectangle.y), 10, 70, 16, BLACK);
-        DrawText(TextFormat("Camera X: %.0f, Y: %.0f", camera.target.x, camera.target.y), 10, 100, 16, BLACK);
-        DrawText(TextFormat("Tiles X: %d-%d", (int)((camera.target.x - 400) / TILE_SIZE), (int)((camera.target.x + 400) / TILE_SIZE)), 10, 130, 16, BLACK);
+        DrawText(TextFormat("Coins : %d", level.coin_count), 10, 60, 16, BLACK);
 
         EndDrawing();
     }

@@ -13,6 +13,7 @@ typedef enum {
     TILE_BRICK,
     TILE_BLOCK,
     TILE_QUESTION,
+    TILE_QUESTION_USED,
     TILE_PIPE_TOP_LEFT,
     TILE_PIPE_TOP_RIGHT,
     TILE_PIPE_BODY_LEFT,
@@ -26,7 +27,8 @@ typedef struct {
     TileType tiles[LEVEL_HEIGHT][LEVEL_WIDTH];
     int width;
     int height;
-    Texture2D tileset;  // Sprite sheet texture
+    Texture2D tileset;
+    int coin_count;
 } Level;
 
 Level create_world_1_1(void);
@@ -35,5 +37,6 @@ void draw_level(Level level, Camera2D camera);
 bool check_tile_collision(Rectangle player_rect, Level level, int* tile_x, int* tile_y);
 TileType get_tile_at_position(Level level, float x, float y);
 void unload_level(Level level);  // To free texture memory
+bool interact_with_block(Level* level, int tile_x, int tile_y);
 
 #endif
