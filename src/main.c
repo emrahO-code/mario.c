@@ -118,6 +118,8 @@ int main()
     InitWindow(SCREENSIZE.x, SCREENSIZE.y, "Mario - World 1-1");
     SetTargetFPS(60);
 
+    load_level_textures(&level);
+
     //Main game loop
     while(!WindowShouldClose()) {
         float dt = GetFrameTime();
@@ -158,7 +160,9 @@ int main()
 
         // Drawing
         BeginDrawing();
-        ClearBackground(SKYBLUE); // Sky color like Mario
+
+        Color sky = (Color){148, 148, 255, 255};
+        ClearBackground(sky); // Sky color like Mario
 
         BeginMode2D(camera);
 
@@ -179,7 +183,7 @@ int main()
 
         EndDrawing();
     }
-
+    unload_level(level);
     CloseWindow();
     return 0;
 }

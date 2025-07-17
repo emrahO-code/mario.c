@@ -7,6 +7,10 @@ Level create_world_1_1(void) {
     level.width = LEVEL_WIDTH;
     level.height = LEVEL_HEIGHT;
 
+
+    // Don't load texture here - it will be loaded after InitWindow()
+    level.tileset.id = 0; // Initialize as empty texture
+
     // Initialize everything as empty
     memset(level.tiles, TILE_EMPTY, sizeof(level.tiles));
 
@@ -40,30 +44,42 @@ Level create_world_1_1(void) {
     level.tiles[high_block_level][34] = TILE_QUESTION;  // Hidden coin block (invisible)
 
     // First pipe at x=35 (can enter)
-    for(int x = 40; x < 42; x++) {
-    level.tiles[ground_row2 - 2][x] = TILE_PIPE_TOP;
-    level.tiles[ground_row2 - 1][x] = TILE_PIPE_BODY;
+    level.tiles[ground_row2 - 2][40] = TILE_PIPE_TOP_LEFT;
+    level.tiles[ground_row2 - 2][41] = TILE_PIPE_TOP_RIGHT;
+
+    level.tiles[ground_row2 - 1][40] = TILE_PIPE_BODY_LEFT;
+    level.tiles[ground_row2 - 1][41] = TILE_PIPE_BODY_RIGHT;
     // Question block at x=41
-    }
-    for(int x = 53; x < 55; x++) {
-    level.tiles[ground_row2 - 3][x] = TILE_PIPE_TOP;
-    level.tiles[ground_row2 - 2][x] = TILE_PIPE_BODY;
-    level.tiles[ground_row2 - 1][x] = TILE_PIPE_BODY;
-    }
+    level.tiles[ground_row2 - 3][53] = TILE_PIPE_TOP_LEFT;
+    level.tiles[ground_row2 - 2][53] = TILE_PIPE_BODY_LEFT;
+    level.tiles[ground_row2 - 1][53] = TILE_PIPE_BODY_LEFT;
 
-    for(int x = 61; x < 63; x++) {
-        level.tiles[ground_row2 - 4][x] = TILE_PIPE_TOP;
-        level.tiles[ground_row2 - 3][x] = TILE_PIPE_BODY;
-        level.tiles[ground_row2 - 2][x] = TILE_PIPE_BODY;
-        level.tiles[ground_row2 - 1][x] = TILE_PIPE_BODY;
-    }
+    level.tiles[ground_row2 - 3][54] = TILE_PIPE_TOP_RIGHT;
+    level.tiles[ground_row2 - 2][54] = TILE_PIPE_BODY_RIGHT;
+    level.tiles[ground_row2 - 1][54] = TILE_PIPE_BODY_RIGHT;
 
-    for(int x = 73; x < 75; x++) {
-        level.tiles[ground_row2 - 4][x] = TILE_PIPE_TOP;
-        level.tiles[ground_row2 - 3][x] = TILE_PIPE_BODY;
-        level.tiles[ground_row2 - 2][x] = TILE_PIPE_BODY;
-        level.tiles[ground_row2 - 1][x] = TILE_PIPE_BODY;
-    }
+
+    level.tiles[ground_row2 - 4][61] = TILE_PIPE_TOP_LEFT;
+    level.tiles[ground_row2 - 3][61] = TILE_PIPE_BODY_LEFT;
+    level.tiles[ground_row2 - 2][61] = TILE_PIPE_BODY_LEFT;
+    level.tiles[ground_row2 - 1][61] = TILE_PIPE_BODY_LEFT;
+
+    level.tiles[ground_row2 - 4][62] = TILE_PIPE_TOP_RIGHT;
+    level.tiles[ground_row2 - 3][62] = TILE_PIPE_BODY_RIGHT;
+    level.tiles[ground_row2 - 2][62] = TILE_PIPE_BODY_RIGHT;
+    level.tiles[ground_row2 - 1][62] = TILE_PIPE_BODY_RIGHT;
+
+
+    level.tiles[ground_row2 - 4][73] = TILE_PIPE_TOP_LEFT;
+    level.tiles[ground_row2 - 3][73] = TILE_PIPE_BODY_LEFT;
+    level.tiles[ground_row2 - 2][73] = TILE_PIPE_BODY_LEFT;
+    level.tiles[ground_row2 - 1][73] = TILE_PIPE_BODY_LEFT;
+
+    level.tiles[ground_row2 - 4][74] = TILE_PIPE_TOP_RIGHT;
+    level.tiles[ground_row2 - 3][74] = TILE_PIPE_BODY_RIGHT;
+    level.tiles[ground_row2 - 2][74] = TILE_PIPE_BODY_RIGHT;
+    level.tiles[ground_row2 - 1][74] = TILE_PIPE_BODY_RIGHT;
+
 
     for (int x = 85; x <= 86; x++) {
         level.tiles[ground_row1][x] = TILE_EMPTY;
@@ -84,79 +100,111 @@ Level create_world_1_1(void) {
         level.tiles[ground_row2][x] = TILE_EMPTY;
     }
 
-    // Question block at x=110
-    level.tiles[block_level][110] = TILE_QUESTION;  // Contains coin
+    for (int x = 107; x <= 109; x++) {
+    level.tiles[high_block_level][x] = TILE_BRICK;  // Contains coin
+    }
 
     // More bricks at x=115-117
-    level.tiles[block_level][115] = TILE_BRICK;
+    level.tiles[high_block_level][110] = TILE_QUESTION;
+    level.tiles[block_level][110] = TILE_BRICK;
+
     level.tiles[block_level][116] = TILE_BRICK;
     level.tiles[block_level][117] = TILE_BRICK;
 
-    // Final question block at x=122
-    level.tiles[block_level][122] = TILE_QUESTION;  // Contains coin
+    level.tiles[block_level][122] = TILE_QUESTION;
+    level.tiles[block_level][125] = TILE_QUESTION;
+    level.tiles[block_level][128] = TILE_QUESTION;
+    level.tiles[high_block_level][125] = TILE_QUESTION;
 
-    // Staircase (classic 4-step staircase) at x=130-136
-    // Step 1
-    level.tiles[ground_row2 - 1][130] = TILE_GROUND;
-    // Step 2
-    level.tiles[ground_row2 - 1][131] = TILE_GROUND;
-    level.tiles[ground_row2 - 2][131] = TILE_GROUND;
-    // Step 3
-    level.tiles[ground_row2 - 1][132] = TILE_GROUND;
-    level.tiles[ground_row2 - 2][132] = TILE_GROUND;
-    level.tiles[ground_row2 - 3][132] = TILE_GROUND;
-    // Step 4 (highest)
-    level.tiles[ground_row2 - 1][133] = TILE_GROUND;
-    level.tiles[ground_row2 - 2][133] = TILE_GROUND;
-    level.tiles[ground_row2 - 3][133] = TILE_GROUND;
-    level.tiles[ground_row2 - 4][133] = TILE_GROUND;
+    level.tiles[block_level][134] = TILE_BRICK;
 
-    // Staircase going down
-    level.tiles[ground_row2 - 1][134] = TILE_GROUND;
-    level.tiles[ground_row2 - 2][134] = TILE_GROUND;
-    level.tiles[ground_row2 - 3][134] = TILE_GROUND;
+    for(int x = 137; x <= 139; x++) {
+    level.tiles[high_block_level][x] = TILE_QUESTION;
+    }
 
-    level.tiles[ground_row2 - 1][135] = TILE_GROUND;
-    level.tiles[ground_row2 - 2][135] = TILE_GROUND;
+    level.tiles[high_block_level][144] = TILE_BRICK;
+    level.tiles[high_block_level][145] = TILE_QUESTION;
+    level.tiles[high_block_level][146] = TILE_QUESTION;
+    level.tiles[high_block_level][147] = TILE_BRICK;
 
-    level.tiles[ground_row2 - 1][136] = TILE_GROUND;
+    level.tiles[block_level][145] = TILE_BRICK;
+    level.tiles[block_level][146] = TILE_BRICK;
 
-    // Final large pit at x=140-147
-    for (int x = 140; x <= 147; x++) {
+    for(int x = 169; x <= 170; x++) {
         level.tiles[ground_row1][x] = TILE_EMPTY;
         level.tiles[ground_row2][x] = TILE_EMPTY;
     }
 
-    // FLAGPOLE AREA at x=152
-    // Flagpole (represented as pipe for now - we'll need to add TILE_FLAGPOLE later)
-    for (int y = ground_row2 - 10; y <= ground_row2 - 1; y++) {
-        level.tiles[y][152] = TILE_PIPE_BODY;  // Flagpole
-    }
-    level.tiles[ground_row2 - 10][152] = TILE_PIPE_TOP;  // Flag at top
-
-    // CASTLE AREA at x=158-165
-    // Castle base
-    for (int x = 158; x <= 165; x++) {
-        level.tiles[ground_row2 - 1][x] = TILE_GROUND;
-        level.tiles[ground_row2 - 2][x] = TILE_GROUND;
-        level.tiles[ground_row2 - 3][x] = TILE_GROUND;
-        level.tiles[ground_row2 - 4][x] = TILE_GROUND;
+    for(int x = 0; x <= 3; x++) {
+        for(int y = 0; y <= x; y++) {
+            level.tiles[ground_row2 - 1 - y][150 + x] = TILE_BLOCK;
+        }
     }
 
-    // Castle towers
-    level.tiles[ground_row2 - 5][159] = TILE_GROUND;   // Left tower
-    level.tiles[ground_row2 - 6][159] = TILE_GROUND;
-    level.tiles[ground_row2 - 5][161] = TILE_GROUND;   // Middle tower
-    level.tiles[ground_row2 - 6][161] = TILE_GROUND;
-    level.tiles[ground_row2 - 7][161] = TILE_GROUND;
-    level.tiles[ground_row2 - 5][163] = TILE_GROUND;   // Right tower
-    level.tiles[ground_row2 - 6][163] = TILE_GROUND;
+    for(int x = 0; x <= 3; x++) {
+        // Fill from the ground up to the step height
+        for(int y = x; y >= 0; y--) {
+            level.tiles[ground_row2 - 1 - y][159 - x] = TILE_BLOCK;
+        }
+    }
 
-    // Castle door
-    level.tiles[ground_row2 - 3][161] = TILE_EMPTY;   // Door opening
-    level.tiles[ground_row2 - 2][161] = TILE_EMPTY;
+    for(int x = 0; x <= 3; x++) {
+        for(int y = 0; y <= x; y++) {
+            level.tiles[ground_row2 - 1 - y][164 + x] = TILE_BLOCK;
+        }
+    }
+
+    for(int x = 0; x <= 3; x++) {
+        level.tiles[ground_row2-1-x][168] = TILE_BLOCK;
+    }
+
+    for(int x = 0; x <= 3; x++) {
+        // Fill from the ground up to the step height
+        for(int y = x; y >= 0; y--) {
+            level.tiles[ground_row2 - 1 - y][174 - x] = TILE_BLOCK;
+        }
+    }
+
+    level.tiles[ground_row2 - 2][179] = TILE_PIPE_TOP_LEFT;
+    level.tiles[ground_row2 - 2][180] = TILE_PIPE_TOP_RIGHT;
+
+    level.tiles[ground_row2 - 1][179] = TILE_PIPE_BODY_LEFT;
+    level.tiles[ground_row2 - 1][180] = TILE_PIPE_BODY_RIGHT;
+
+    level.tiles[block_level][184] = TILE_BRICK;
+    level.tiles[block_level][185] = TILE_BRICK;
+    level.tiles[block_level][186] = TILE_QUESTION;
+    level.tiles[block_level][187] = TILE_BRICK;
+
+    level.tiles[ground_row2 - 2][195] = TILE_PIPE_TOP_LEFT;
+    level.tiles[ground_row2 - 2][196] = TILE_PIPE_TOP_RIGHT;
+
+    level.tiles[ground_row2 - 1][195] = TILE_PIPE_BODY_LEFT;
+    level.tiles[ground_row2 - 1][196] = TILE_PIPE_BODY_RIGHT;
+
+    for(int x = 0; x <= 7; x++) {
+        for(int y = 0; y <= x; y++) {
+            level.tiles[ground_row2 - 1 - y][197 + x] = TILE_BLOCK;
+        }
+    }
+
+    for(int x = 0; x <= 7; x++) {
+        level.tiles[ground_row2-1-x][205] = TILE_BLOCK;
+    }
 
     return level;
+}
+
+void load_level_textures(Level* level) {
+    // Load tileset texture after InitWindow() is called
+    level->tileset = LoadTexture("assets/mario_tiles.png");
+
+    // If texture fails to load, we'll fall back to colored rectangles
+    if (level->tileset.id == 0) {
+        printf("Warning: Could not load mario_tiles.png, using colored rectangles\n");
+    } else {
+        printf("Tileset loaded successfully: %dx%d\n", level->tileset.width, level->tileset.height);
+    }
 }
 
 void draw_level(Level level, Camera2D camera) {
@@ -172,10 +220,13 @@ void draw_level(Level level, Camera2D camera) {
             }
         }
         printf("Total tiles: %d\n", tile_count);
+        if (level.tileset.id != 0) {
+            printf("Tileset loaded: %dx%d\n", level.tileset.width, level.tileset.height);
+        }
         debug_printed = true;
     }
 
-    // Draw ALL tiles to debug (no culling)
+    // Draw ALL tiles - try sprites first, fallback to colored rectangles
     for (int y = 0; y < LEVEL_HEIGHT; y++) {
         for (int x = 0; x < LEVEL_WIDTH; x++) {
             if (level.tiles[y][x] != TILE_EMPTY) {
@@ -186,32 +237,79 @@ void draw_level(Level level, Camera2D camera) {
                     TILE_SIZE
                 };
 
-                Color tile_color;
-                switch (level.tiles[y][x]) {
-                    case TILE_GROUND: tile_color = BROWN; break;
-                    case TILE_BRICK: tile_color = RED; break;
-                    case TILE_QUESTION: tile_color = YELLOW; break;
-                    case TILE_PIPE_TOP: tile_color = GREEN; break;
-                    case TILE_PIPE_BODY: tile_color = DARKGREEN; break;
-                    case TILE_FLAGPOLE: tile_color = GRAY; break;
-                    case TILE_FLAG: tile_color = RED; break;
-                    case TILE_CASTLE: tile_color = LIGHTGRAY; break;
-                    default: tile_color = WHITE; break;
+                // Try to use sprites if texture is loaded
+                bool sprite_drawn = false;
+                if (level.tileset.id != 0) {
+                    Rectangle source_rect = {0, 0, 16, 16}; // Start with safe coordinates
+
+                    // Use very simple, safe sprite coordinates
+                    switch (level.tiles[y][x]) {
+                        case TILE_GROUND:
+                            source_rect = (Rectangle){0, 16, 15, 16};    // Top-left tile
+                            break;
+                        case TILE_BRICK:
+                            source_rect = (Rectangle){17, 16, 16, 16};   // Second tile in top row
+                            break;
+                        case TILE_QUESTION:
+                            source_rect = (Rectangle){298, 78, 16, 16};   // Third tile in top row
+                            break;
+                        case TILE_PIPE_TOP_LEFT:
+                            source_rect = (Rectangle){119, 196, 16, 16};   // Fourth tile in top row
+                            break;
+                        case TILE_PIPE_TOP_RIGHT:
+                            source_rect = (Rectangle){136, 196, 15, 16};
+                            break;
+                        case TILE_PIPE_BODY_LEFT:
+                            source_rect = (Rectangle){119, 213, 16, 16};   // Fifth tile in top row
+                            break;
+                        case TILE_PIPE_BODY_RIGHT:
+                            source_rect = (Rectangle){136, 213, 16, 16};   // Fifth tile in top row
+                            break;
+                        case TILE_BLOCK:
+                            source_rect = (Rectangle){0, 33, 16, 16};
+                            break;
+                        default:
+                            source_rect = (Rectangle){0, 0, 16, 16};    // Default to first tile
+                            break;
+                    }
+
+                    // Extra safety check
+                    if (source_rect.x >= 0 && source_rect.y >= 0 &&
+                        source_rect.x + source_rect.width <= level.tileset.width &&
+                        source_rect.y + source_rect.height <= level.tileset.height) {
+
+                        DrawTexturePro(level.tileset, source_rect, tile_rect, (Vector2){0, 0}, 0, WHITE);
+                        sprite_drawn = true;
+                    }
                 }
 
-                DrawRectangleRec(tile_rect, tile_color);
+                // Fallback to colored rectangles if sprite didn't work
+                if (!sprite_drawn) {
+                    Color tile_color;
+                    switch (level.tiles[y][x]) {
+                        case TILE_GROUND: tile_color = BROWN; break;
+                        case TILE_BRICK: tile_color = RED; break;
+                        case TILE_QUESTION: tile_color = YELLOW; break;
+                        case TILE_PIPE_TOP_LEFT: tile_color = GREEN; break;
+                        case TILE_PIPE_TOP_RIGHT: tile_color = BLUE; break;
+                        case TILE_PIPE_BODY_RIGHT: tile_color = DARKGREEN; break;
+                        case TILE_PIPE_BODY_LEFT: tile_color = RED; break;
+                        case TILE_FLAGPOLE: tile_color = GRAY; break;
+                        case TILE_FLAG: tile_color = RED; break;
+                        case TILE_CASTLE: tile_color = LIGHTGRAY; break;
+                        default: tile_color = WHITE; break;
+                    }
 
-                // Debug: Draw tile borders
-                DrawRectangleLinesEx(tile_rect, 1, BLACK);
-
-                // Special drawing for flagpole
-                if (level.tiles[y][x] == TILE_PIPE_TOP && x == 152) {
-                    // Draw flag at top of pole
-                    Rectangle flag_rect = {x * TILE_SIZE + TILE_SIZE/2, y * TILE_SIZE, TILE_SIZE/2, TILE_SIZE/2};
-                    DrawRectangleRec(flag_rect, RED);
+                    DrawRectangleRec(tile_rect, tile_color);
                 }
             }
         }
+    }
+}
+
+void unload_level(Level level) {
+    if (level.tileset.id != 0) {
+        UnloadTexture(level.tileset);
     }
 }
 
