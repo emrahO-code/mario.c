@@ -4,6 +4,7 @@
 #include <camera.h>
 #include <level.h>
 #include <enemy.h>
+#include <item.h>
 
 bool check_pit_collision(Player* player) {
     // Check if Mario has fallen below the ground level (into a pit)
@@ -16,7 +17,7 @@ bool check_pit_collision(Player* player) {
     return false;
 }
 
-void reset_game(Player* player, Level* level, EnemyManager* enemy_manager) {
+void reset_game(Player* player, Level* level, EnemyManager* enemy_manager, ItemManager* item_manager) {
     // Reset player position and state
     player->rectangle.x = 380; // Starting X position
     player->rectangle.y = (LEVEL_HEIGHT - 4) * TILE_SIZE; // Starting Y position
@@ -33,22 +34,18 @@ void reset_game(Player* player, Level* level, EnemyManager* enemy_manager) {
     *level = create_world_1_1();
 
     // Reset enemies - deactivate all enemies and respawn them
-    for (int i = 0; i < MAX_ENEMIES; i++) {
-        enemy_manager->enemies[i].active = false;
+    spawn_configured_enemies(enemy_manager);
+
+    // Reset items - deactivate all items
+    for (int i = 0; i < MAX_ITEMS; i++) {
+        item_manager->items[i].active = false;
     }
-    enemy_manager->enemy_count = 0;
+    item_manager->active_count = 0;
 
-    // Respawn Goombas at their starting positions
-    spawn_goomba_at_tile(enemy_manager, 34, (LEVEL_HEIGHT - 4));
-    spawn_goomba_at_tile(enemy_manager, 55, (LEVEL_HEIGHT - 4));
-    spawn_goomba_at_tile(enemy_manager, 66, (LEVEL_HEIGHT - 4));
-    spawn_goomba_at_tile(enemy_manager, 68, (LEVEL_HEIGHT - 4));
-    spawn_goomba_at_tile(enemy_manager, 96, (LEVEL_HEIGHT - 11));
-    spawn_goomba_at_tile(enemy_manager, 98, (LEVEL_HEIGHT - 11));
-
+    printf("Game reset! Mario is back at the start.\n");
 }
 
-bool check_level_collision(Player* player, Level* level, float dt) {
+bool check_level_collision(Player* player, Level* level, ItemManager* item_manager, float dt) {
     bool on_ground = false;
 
     // Check collision with level tiles
@@ -59,11 +56,11 @@ bool check_level_collision(Player* player, Level* level, float dt) {
     if (player->velocity.y > 0) { // Falling
         // Check bottom collision
         float bottom_y = future_rect.y + future_rect.height;
-        float left_x = future_rect.x;
-        float right_x = future_rect.x + future_rect.width;
+        float left_x = future_rect.x + 2; // Small margin from edges
+        float right_x = future_rect.x + future_rect.width - 2;
 
         // Check tiles under player's feet
-        for (float x = left_x; x < right_x; x += TILE_SIZE/2) {
+        for (float x = left_x; x < right_x; x += TILE_SIZE/4) { // More check points
             TileType tile = get_tile_at_position(*level, x, bottom_y);
             if (tile != TILE_EMPTY) {
                 // Calculate exact collision point
@@ -77,11 +74,11 @@ bool check_level_collision(Player* player, Level* level, float dt) {
     } else if (player->velocity.y < 0) { // Jumping up
         // Check top collision
         float top_y = future_rect.y;
-        float left_x = future_rect.x;
-        float right_x = future_rect.x + future_rect.width;
+        float left_x = future_rect.x + 2; // Small margin from edges
+        float right_x = future_rect.x + future_rect.width - 2;
 
         // Check tiles above player's head
-        for (float x = left_x; x < right_x; x += TILE_SIZE/2) {
+        for (float x = left_x; x < right_x; x += TILE_SIZE/4) { // More check points
             TileType tile = get_tile_at_position(*level, x, top_y);
             if (tile != TILE_EMPTY) {
                 // Hit ceiling - check for interactive blocks
@@ -90,7 +87,7 @@ bool check_level_collision(Player* player, Level* level, float dt) {
 
                 // Try to interact with the block
                 if (tile == TILE_BRICK || tile == TILE_QUESTION || tile == TILE_QUESTION_USED) {
-                    interact_with_block(level, block_x, block_y);
+                    interact_with_block(level, block_x, block_y, item_manager, player);
                 }
 
                 // Stop upward movement
@@ -116,28 +113,28 @@ bool check_horizontal_collision(Player* player, Level level, float dt) {
     }
 
     // Check left and right collision
-    float top_y = future_rect.y;
-    float bottom_y = future_rect.y + future_rect.height;
+    float top_y = future_rect.y + 2; // Small margin from top/bottom
+    float bottom_y = future_rect.y + future_rect.height - 2;
 
     if (player->velocity.x > 0) { // Moving right
         float right_x = future_rect.x + future_rect.width;
 
-        for (float y = top_y; y < bottom_y; y += TILE_SIZE/2) {
+        for (float y = top_y; y < bottom_y; y += TILE_SIZE/4) { // More check points
             TileType tile = get_tile_at_position(level, right_x, y);
             if (tile != TILE_EMPTY) {
                 int tile_x = (int)(right_x / TILE_SIZE);
-                player->rectangle.x = tile_x * TILE_SIZE - player->rectangle.width;
+                player->rectangle.x = tile_x * TILE_SIZE - player->rectangle.width - 1; // Small gap
                 return true;
             }
         }
     } else if (player->velocity.x < 0) { // Moving left
         float left_x = future_rect.x;
 
-        for (float y = top_y; y < bottom_y; y += TILE_SIZE/2) {
+        for (float y = top_y; y < bottom_y; y += TILE_SIZE/4) { // More check points
             TileType tile = get_tile_at_position(level, left_x, y);
             if (tile != TILE_EMPTY) {
                 int tile_x = (int)(left_x / TILE_SIZE);
-                player->rectangle.x = (tile_x + 1) * TILE_SIZE;
+                player->rectangle.x = (tile_x + 1) * TILE_SIZE + 1; // Small gap
                 return true;
             }
         }
@@ -159,10 +156,11 @@ int main()
     SCREENSIZE.y = 600;
     Camera2D camera = create_camera((Vector2) {SCREENSIZE.x/2, SCREENSIZE.y/2});
 
-    // Create level, player, and enemies
+    // Create level, player, enemies, and items
     Level level = create_world_1_1();
     Player player = create_player();
     EnemyManager enemy_manager = create_enemy_manager();
+    ItemManager item_manager = create_item_manager();
 
     // Fix player starting position - place above ground
     player.rectangle.x = 380; // Start a bit away from left edge
@@ -176,13 +174,10 @@ int main()
     load_level_textures(&level);
     load_player_sprites(&player);
     load_enemy_sprites(&enemy_manager);
+    load_item_sprites(&item_manager);
 
     // Spawn Goombas throughout the level
-    spawn_goomba_at_tile(&enemy_manager, 45, LEVEL_HEIGHT - 4);  // Tile 18, above ground
-    spawn_goomba_at_tile(&enemy_manager, 50, LEVEL_HEIGHT - 4);  // Tile 37, above ground
-    spawn_goomba_at_tile(&enemy_manager, 56, LEVEL_HEIGHT - 4);  // Tile 56, above ground
-    spawn_goomba_at_tile(&enemy_manager, 75, LEVEL_HEIGHT - 4);  // Tile 75, above ground
-    spawn_goomba_at_tile(&enemy_manager, 94, LEVEL_HEIGHT - 4);
+    spawn_configured_enemies(&enemy_manager);
 
     //Main game loop
     while(!WindowShouldClose()) {
@@ -205,11 +200,12 @@ int main()
 
         // Check for pit collision (Mario falling into pits)
         if (check_pit_collision(&player)) {
-            reset_game(&player, &level, &enemy_manager);
+            reset_game(&player, &level, &enemy_manager, &item_manager);
             // Reload textures after level reset
             load_level_textures(&level);
             load_player_sprites(&player);
             load_enemy_sprites(&enemy_manager);
+            load_item_sprites(&item_manager);
         }
 
         // Check horizontal collision and move horizontally
@@ -218,7 +214,7 @@ int main()
         }
 
         // Check vertical collision and handle jumping
-        bool on_ground = check_level_collision(&player, &level, dt);
+        bool on_ground = check_level_collision(&player, &level, &item_manager, dt);
         player.on_ground = on_ground; // Update player's ground state
 
         // Apply vertical movement if no collision
@@ -237,20 +233,55 @@ int main()
         // Update enemies (now includes collision detection)
         update_enemies(&enemy_manager, level, dt);
 
+        // Update items
+        update_items(&item_manager, &level, dt);
+
+        // Check player-item collision
+        ItemType collected_item;
+        if (check_player_item_collision(player.rectangle, &item_manager, &collected_item)) {
+            switch (collected_item) {
+                case ITEM_MUSHROOM:
+                    mario_power_up(&player);
+                    break;
+                case ITEM_STAR:
+                    // Give star power (invincibility)
+                    player.invincible = true;
+                    player.invincible_timer = 10.0f; // 10 seconds of invincibility
+                    printf("Star power! Mario is invincible!\n");
+                    break;
+                case ITEM_FIRE_FLOWER:
+                    mario_power_up(&player);
+                    break;
+                case ITEM_1UP_MUSHROOM:
+                    // Add extra life logic
+                    printf("Extra life!\n");
+                    break;
+                case ITEM_COIN:
+                    level.coin_count++;
+                    break;
+            }
+        }
+
         // Check player-enemy collision
         bool enemy_defeated;
         if (check_player_enemy_collision(player.rectangle, &enemy_manager, &enemy_defeated)) {
-            // Player was hit by enemy - take damage
-            mario_take_damage(&player);
+            // Player was hit by enemy - take damage (unless invincible)
+            if (!player.invincible) {
+                MarioState old_state = player.state;
+                mario_take_damage(&player);
 
-            // If Mario is small and gets hit, restart the game
-            if (player.state == MARIO_SMALL) {
-                printf("Small Mario died! Restarting game...\n");
-                reset_game(&player, &level, &enemy_manager);
-                load_level_textures(&level);
-                load_player_sprites(&player);
-                load_enemy_sprites(&enemy_manager);
-                continue; // Skip rest of frame processing
+                // Only restart if Small Mario gets hit
+                if (old_state == MARIO_SMALL) {
+                    printf("Small Mario died! Restarting game...\n");
+                    reset_game(&player, &level, &enemy_manager, &item_manager);
+                    load_level_textures(&level);
+                    load_player_sprites(&player);
+                    load_enemy_sprites(&enemy_manager);
+                    load_item_sprites(&item_manager);
+                    continue; // Skip rest of frame processing
+                }
+            } else {
+                printf("Mario is invincible - no damage taken!\n");
             }
         }
         if (enemy_defeated) {
@@ -277,6 +308,9 @@ int main()
         // Draw enemies
         draw_enemies(enemy_manager);
 
+        // Draw items
+        draw_items(item_manager);
+
         // Draw player
         draw_player(player);
 
@@ -297,8 +331,14 @@ int main()
         }
         DrawText(mario_state_text, 10, 100, 16, BLACK);
 
-        // Show enemy count
+        // Show enemy and item counts
         DrawText(TextFormat("Enemies: %d", enemy_manager.enemy_count), 10, 130, 16, BLACK);
+        DrawText(TextFormat("Items: %d", item_manager.active_count), 10, 160, 16, BLACK);
+
+        // Show invincibility status
+        if (player.invincible) {
+            DrawText(TextFormat("STAR POWER! %.1fs", player.invincible_timer), 10, 190, 16, YELLOW);
+        }
 
         EndDrawing();
     }
@@ -307,6 +347,7 @@ int main()
     unload_level(level);
     unload_player(player);
     unload_enemy_manager(enemy_manager);
+    unload_item_manager(item_manager);
     CloseWindow();
     return 0;
 }

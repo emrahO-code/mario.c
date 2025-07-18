@@ -41,18 +41,25 @@ typedef struct {
     Texture2D enemy_sprites;
 } EnemyManager;
 
+typedef struct {
+    int tile_x;
+    int tile_y;
+    EnemyType type;
+} EnemySpawn;
+
 // Function declarations
 EnemyManager create_enemy_manager(void);
 void load_enemy_sprites(EnemyManager* manager);
 void spawn_goomba(EnemyManager* manager, float x, float y);
 void update_enemies(EnemyManager* manager, Level level, float dt);
-void update_enemy_physics(Enemy* enemy, float dt);
+void update_enemy_physics(Enemy* enemy, Level level, float dt);
 bool check_enemy_level_collision(Enemy* enemy, Level level, float dt);
 bool check_enemy_tile_collision(Enemy* enemy, Rectangle tile_rect);
 void draw_enemies(EnemyManager manager);
 void unload_enemy_manager(EnemyManager manager);
 bool check_enemy_enemy_collision(Enemy* enemy, EnemyManager* manager);
 void spawn_goomba_at_tile(EnemyManager* manager, int tile_x, int tile_y);
+void spawn_configured_enemies(EnemyManager* enemy_manager);
 
 // Player-Enemy interaction
 bool check_player_enemy_collision(Rectangle player_rect, EnemyManager* manager, bool* enemy_defeated);

@@ -98,25 +98,25 @@ void mario_take_damage(Player* player) {
     }
 
     switch (player->state) {
-        case MARIO_SMALL:
-            // Small Mario dies (you might want to handle this in main.c)
-            printf("Mario died!\n");
-            break;
-        case MARIO_SUPER:
-            // Super Mario becomes small
-            player->state = MARIO_SMALL;
-            update_mario_size(player);
-            player->invincible = true;
-            player->invincible_timer = 2.0f; // 2 seconds of invincibility
-            printf("Mario powered down to small!\n");
-            break;
-        case MARIO_FIRE:
-            // Fire Mario becomes super
-            player->state = MARIO_SUPER;
-            player->invincible = true;
-            player->invincible_timer = 2.0f;
-            printf("Mario powered down to super!\n");
-            break;
+    case MARIO_SMALL:
+        // Small Mario dies - this will be handled in main.c
+        printf("Small Mario took damage!\n");
+        break;
+    case MARIO_SUPER:
+        // Super Mario becomes small
+        player->state = MARIO_SMALL;
+        update_mario_size(player);
+        player->invincible = true;
+        player->invincible_timer = 2.0f; // 2 seconds of invincibility
+        printf("Mario powered down to small!\n");
+        break;
+    case MARIO_FIRE:
+        // Fire Mario becomes super
+        player->state = MARIO_SUPER;
+        player->invincible = true;
+        player->invincible_timer = 2.0f;
+        printf("Mario powered down to super!\n");
+        break;
     }
 }
 

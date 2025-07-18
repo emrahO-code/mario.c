@@ -1,4 +1,6 @@
 #include "level.h"
+#include "item.h"
+#include "player.h"
 #include <string.h>
 #include <stdio.h>
 
@@ -7,7 +9,6 @@ Level create_world_1_1(void) {
     level.width = LEVEL_WIDTH;
     level.height = LEVEL_HEIGHT;
     level.coin_count = 0;
-
 
     // Don't load texture here - it will be loaded after InitWindow()
     level.tileset.id = 0; // Initialize as empty texture
@@ -59,7 +60,6 @@ Level create_world_1_1(void) {
     level.tiles[ground_row2 - 2][54] = TILE_PIPE_BODY_RIGHT;
     level.tiles[ground_row2 - 1][54] = TILE_PIPE_BODY_RIGHT;
 
-
     level.tiles[ground_row2 - 4][61] = TILE_PIPE_TOP_LEFT;
     level.tiles[ground_row2 - 3][61] = TILE_PIPE_BODY_LEFT;
     level.tiles[ground_row2 - 2][61] = TILE_PIPE_BODY_LEFT;
@@ -70,7 +70,6 @@ Level create_world_1_1(void) {
     level.tiles[ground_row2 - 2][62] = TILE_PIPE_BODY_RIGHT;
     level.tiles[ground_row2 - 1][62] = TILE_PIPE_BODY_RIGHT;
 
-
     level.tiles[ground_row2 - 4][73] = TILE_PIPE_TOP_LEFT;
     level.tiles[ground_row2 - 3][73] = TILE_PIPE_BODY_LEFT;
     level.tiles[ground_row2 - 2][73] = TILE_PIPE_BODY_LEFT;
@@ -80,7 +79,6 @@ Level create_world_1_1(void) {
     level.tiles[ground_row2 - 3][74] = TILE_PIPE_BODY_RIGHT;
     level.tiles[ground_row2 - 2][74] = TILE_PIPE_BODY_RIGHT;
     level.tiles[ground_row2 - 1][74] = TILE_PIPE_BODY_RIGHT;
-
 
     for (int x = 85; x <= 86; x++) {
         level.tiles[ground_row1][x] = TILE_EMPTY;
@@ -120,7 +118,7 @@ Level create_world_1_1(void) {
     level.tiles[block_level][134] = TILE_BRICK;
 
     for(int x = 137; x <= 139; x++) {
-    level.tiles[high_block_level][x] = TILE_QUESTION;
+    level.tiles[high_block_level][x] = TILE_BRICK;
     }
 
     level.tiles[high_block_level][144] = TILE_BRICK;
@@ -255,7 +253,7 @@ void draw_level(Level level, Camera2D camera) {
                             source_rect = (Rectangle){298, 78, 16, 16};   // Third tile in top row
                             break;
                         case TILE_QUESTION_USED:
-                            source_rect = (Rectangle){349, 78, 16, 16};   // Third tile in top row
+                            source_rect = (Rectangle){349, 78, 16, 16};   // Used question block
                             break;
                         case TILE_PIPE_TOP_LEFT:
                             source_rect = (Rectangle){119, 196, 16, 16};   // Fourth tile in top row
@@ -294,6 +292,7 @@ void draw_level(Level level, Camera2D camera) {
                         case TILE_GROUND: tile_color = BROWN; break;
                         case TILE_BRICK: tile_color = RED; break;
                         case TILE_QUESTION: tile_color = YELLOW; break;
+                        case TILE_QUESTION_USED: tile_color = ORANGE; break;
                         case TILE_PIPE_TOP_LEFT: tile_color = GREEN; break;
                         case TILE_PIPE_TOP_RIGHT: tile_color = BLUE; break;
                         case TILE_PIPE_BODY_RIGHT: tile_color = DARKGREEN; break;
@@ -342,26 +341,50 @@ bool check_tile_collision(Rectangle player_rect, Level level, int* tile_x, int* 
     return false;
 }
 
-bool interact_with_block(Level* level, int tile_x, int tile_y) {
+bool interact_with_block(Level* level, int tile_x, int tile_y, void* item_manager_ptr, void* player_ptr) {
     if (tile_x < 0 || tile_x >= LEVEL_WIDTH || tile_y < 0 || tile_y >= LEVEL_HEIGHT) {
         return false;
     }
 
+    // Cast void pointer to ItemManager pointer
+    ItemManager* item_manager = (ItemManager*)item_manager_ptr;
+    Player* player = (Player*)player_ptr;
+
+
     TileType block_type = level->tiles[tile_y][tile_x];
+    float pixel_x = tile_x * TILE_SIZE;
+    float pixel_y = tile_y * TILE_SIZE;
 
     switch (block_type) {
     case TILE_BRICK:
-            level->tiles[tile_y][tile_x] = TILE_EMPTY;
-            return true; // Block was destroyed
+        if(player->state == MARIO_SUPER || player->state == MARIO_FIRE){
+        level->tiles[tile_y][tile_x] = TILE_EMPTY;
+            if (tile_x == 117) { // Another specific block for star
+            spawn_star(item_manager, pixel_x, pixel_y - 32);
+            }
+        return true;
+        } else {
+            return false;
+        }
         break;
 
     case TILE_QUESTION:
         level->tiles[tile_y][tile_x] = TILE_QUESTION_USED;
-        level->coin_count++;
+
+        // Spawn different items based on Mario's state or block location
+        if (tile_x == 33 || (tile_x ==125 && tile_y == 4) ) { // First question block - spawn mushroom
+            spawn_mushroom(item_manager, pixel_x, pixel_y - 32);
+        } else {
+            // Regular blocks just give coins
+            level->coin_count++;
+        }
+
+        printf("Question block opened at (%d, %d)!\n", tile_x, tile_y);
         return false; // Block remains but changed
         break;
 
     case TILE_QUESTION_USED:
+        printf("Already used question block at (%d, %d)\n", tile_x, tile_y);
         return false;
         break;
 
