@@ -51,6 +51,8 @@ bool check_enemy_level_collision(Enemy* enemy, Level level, float dt);
 bool check_enemy_tile_collision(Enemy* enemy, Rectangle tile_rect);
 void draw_enemies(EnemyManager manager);
 void unload_enemy_manager(EnemyManager manager);
+bool check_enemy_enemy_collision(Enemy* enemy, EnemyManager* manager);
+void spawn_goomba_at_tile(EnemyManager* manager, int tile_x, int tile_y);
 
 // Player-Enemy interaction
 bool check_player_enemy_collision(Rectangle player_rect, EnemyManager* manager, bool* enemy_defeated);

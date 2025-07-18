@@ -177,11 +177,11 @@ int main()
     load_enemy_sprites(&enemy_manager);
 
     // Spawn Goombas throughout the level
-    spawn_goomba(&enemy_manager, 600, (LEVEL_HEIGHT - 4) * TILE_SIZE);
-    spawn_goomba(&enemy_manager, 1200, (LEVEL_HEIGHT - 4) * TILE_SIZE);
-    spawn_goomba(&enemy_manager, 1800, (LEVEL_HEIGHT - 4) * TILE_SIZE);
-    spawn_goomba(&enemy_manager, 2400, (LEVEL_HEIGHT - 4) * TILE_SIZE);
-    spawn_goomba(&enemy_manager, 3000, (LEVEL_HEIGHT - 4) * TILE_SIZE);
+    spawn_goomba_at_tile(&enemy_manager, 45, LEVEL_HEIGHT - 4);  // Tile 18, above ground
+    spawn_goomba_at_tile(&enemy_manager, 50, LEVEL_HEIGHT - 4);  // Tile 37, above ground
+    spawn_goomba_at_tile(&enemy_manager, 56, LEVEL_HEIGHT - 4);  // Tile 56, above ground
+    spawn_goomba_at_tile(&enemy_manager, 75, LEVEL_HEIGHT - 4);  // Tile 75, above ground
+    spawn_goomba_at_tile(&enemy_manager, 94, LEVEL_HEIGHT - 4);
 
     //Main game loop
     while(!WindowShouldClose()) {
