@@ -39,12 +39,13 @@ void reset_game(Player* player, Level* level, EnemyManager* enemy_manager) {
     enemy_manager->enemy_count = 0;
 
     // Respawn Goombas at their starting positions
-    spawn_goomba(enemy_manager, 600, (LEVEL_HEIGHT - 4) * TILE_SIZE);
-    spawn_goomba(enemy_manager, 1200, (LEVEL_HEIGHT - 4) * TILE_SIZE);
-    spawn_goomba(enemy_manager, 1800, (LEVEL_HEIGHT - 4) * TILE_SIZE);
-    spawn_goomba(enemy_manager, 2400, (LEVEL_HEIGHT - 4) * TILE_SIZE);
+    spawn_goomba_at_tile(enemy_manager, 34, (LEVEL_HEIGHT - 4));
+    spawn_goomba_at_tile(enemy_manager, 55, (LEVEL_HEIGHT - 4));
+    spawn_goomba_at_tile(enemy_manager, 66, (LEVEL_HEIGHT - 4));
+    spawn_goomba_at_tile(enemy_manager, 68, (LEVEL_HEIGHT - 4));
+    spawn_goomba_at_tile(enemy_manager, 96, (LEVEL_HEIGHT - 11));
+    spawn_goomba_at_tile(enemy_manager, 98, (LEVEL_HEIGHT - 11));
 
-    printf("Game reset! Mario is back at the start.\n");
 }
 
 bool check_level_collision(Player* player, Level* level, float dt) {
