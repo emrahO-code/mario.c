@@ -10,6 +10,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/emraho/Projects/mario.c/src/block.c" "CMakeFiles/mario.dir/src/block.c.o" "gcc" "CMakeFiles/mario.dir/src/block.c.o.d"
   "/home/emraho/Projects/mario.c/src/camera.c" "CMakeFiles/mario.dir/src/camera.c.o" "gcc" "CMakeFiles/mario.dir/src/camera.c.o.d"
+  "/home/emraho/Projects/mario.c/src/enemy.c" "CMakeFiles/mario.dir/src/enemy.c.o" "gcc" "CMakeFiles/mario.dir/src/enemy.c.o.d"
   "/home/emraho/Projects/mario.c/src/game.c" "CMakeFiles/mario.dir/src/game.c.o" "gcc" "CMakeFiles/mario.dir/src/game.c.o.d"
   "/home/emraho/Projects/mario.c/src/item.c" "CMakeFiles/mario.dir/src/item.c.o" "gcc" "CMakeFiles/mario.dir/src/item.c.o.d"
   "/home/emraho/Projects/mario.c/src/level.c" "CMakeFiles/mario.dir/src/level.c.o" "gcc" "CMakeFiles/mario.dir/src/level.c.o.d"

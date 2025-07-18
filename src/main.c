@@ -3,6 +3,49 @@
 #include <player.h>
 #include <camera.h>
 #include <level.h>
+#include <enemy.h>
+
+bool check_pit_collision(Player* player) {
+    // Check if Mario has fallen below the ground level (into a pit)
+    float pit_threshold = (LEVEL_HEIGHT - 1) * TILE_SIZE + 50; // A bit below ground level
+
+    if (player->rectangle.y > pit_threshold) {
+        printf("Mario fell into a pit! Game restarting...\n");
+        return true;
+    }
+    return false;
+}
+
+void reset_game(Player* player, Level* level, EnemyManager* enemy_manager) {
+    // Reset player position and state
+    player->rectangle.x = 380; // Starting X position
+    player->rectangle.y = (LEVEL_HEIGHT - 4) * TILE_SIZE; // Starting Y position
+    player->velocity.x = 0;
+    player->velocity.y = 0;
+    player->state = MARIO_SMALL; // Reset to small Mario
+    player->facing_right = true;
+    player->invincible = false;
+    player->invincible_timer = 0;
+    update_mario_size(player); // Update collision box size
+
+    // Reset level (recreate it to restore broken blocks and reset coin count)
+    unload_level(*level);
+    *level = create_world_1_1();
+
+    // Reset enemies - deactivate all enemies and respawn them
+    for (int i = 0; i < MAX_ENEMIES; i++) {
+        enemy_manager->enemies[i].active = false;
+    }
+    enemy_manager->enemy_count = 0;
+
+    // Respawn Goombas at their starting positions
+    spawn_goomba(enemy_manager, 600, (LEVEL_HEIGHT - 4) * TILE_SIZE);
+    spawn_goomba(enemy_manager, 1200, (LEVEL_HEIGHT - 4) * TILE_SIZE);
+    spawn_goomba(enemy_manager, 1800, (LEVEL_HEIGHT - 4) * TILE_SIZE);
+    spawn_goomba(enemy_manager, 2400, (LEVEL_HEIGHT - 4) * TILE_SIZE);
+
+    printf("Game reset! Mario is back at the start.\n");
+}
 
 bool check_level_collision(Player* player, Level* level, float dt) {
     bool on_ground = false;
@@ -115,9 +158,10 @@ int main()
     SCREENSIZE.y = 600;
     Camera2D camera = create_camera((Vector2) {SCREENSIZE.x/2, SCREENSIZE.y/2});
 
-    // Create level and player
+    // Create level, player, and enemies
     Level level = create_world_1_1();
     Player player = create_player();
+    EnemyManager enemy_manager = create_enemy_manager();
 
     // Fix player starting position - place above ground
     player.rectangle.x = 380; // Start a bit away from left edge
@@ -127,7 +171,17 @@ int main()
     InitWindow(SCREENSIZE.x, SCREENSIZE.y, "Mario - World 1-1");
     SetTargetFPS(60);
 
+    // Load all textures after window initialization
     load_level_textures(&level);
+    load_player_sprites(&player);
+    load_enemy_sprites(&enemy_manager);
+
+    // Spawn Goombas throughout the level
+    spawn_goomba(&enemy_manager, 600, (LEVEL_HEIGHT - 4) * TILE_SIZE);
+    spawn_goomba(&enemy_manager, 1200, (LEVEL_HEIGHT - 4) * TILE_SIZE);
+    spawn_goomba(&enemy_manager, 1800, (LEVEL_HEIGHT - 4) * TILE_SIZE);
+    spawn_goomba(&enemy_manager, 2400, (LEVEL_HEIGHT - 4) * TILE_SIZE);
+    spawn_goomba(&enemy_manager, 3000, (LEVEL_HEIGHT - 4) * TILE_SIZE);
 
     //Main game loop
     while(!WindowShouldClose()) {
@@ -136,14 +190,25 @@ int main()
         // Apply gravity
         player.velocity.y += GRAVITY * dt;
 
-        // Handle input
+        // Handle input and direction
         player.velocity.x = 0; // Reset horizontal velocity
 
         if (IsKeyDown(KEY_A)) {
             player.velocity.x = -WALKSPEED;
+            player.facing_right = false; // Face left
         }
         if (IsKeyDown(KEY_D)) {
             player.velocity.x = WALKSPEED;
+            player.facing_right = true;  // Face right
+        }
+
+        // Check for pit collision (Mario falling into pits)
+        if (check_pit_collision(&player)) {
+            reset_game(&player, &level, &enemy_manager);
+            // Reload textures after level reset
+            load_level_textures(&level);
+            load_player_sprites(&player);
+            load_enemy_sprites(&enemy_manager);
         }
 
         // Check horizontal collision and move horizontally
@@ -153,6 +218,7 @@ int main()
 
         // Check vertical collision and handle jumping
         bool on_ground = check_level_collision(&player, &level, dt);
+        player.on_ground = on_ground; // Update player's ground state
 
         // Apply vertical movement if no collision
         if (!on_ground && player.velocity.y != 0) {
@@ -162,6 +228,35 @@ int main()
         // Jump only when on ground
         if (on_ground && IsKeyDown(KEY_W)) {
             player.velocity.y = JUMPVELOCITY;
+        }
+
+        // Update player animation
+        update_player_animation(&player, dt);
+
+        // Update enemies (now includes collision detection)
+        update_enemies(&enemy_manager, level, dt);
+
+        // Check player-enemy collision
+        bool enemy_defeated;
+        if (check_player_enemy_collision(player.rectangle, &enemy_manager, &enemy_defeated)) {
+            // Player was hit by enemy - take damage
+            mario_take_damage(&player);
+
+            // If Mario is small and gets hit, restart the game
+            if (player.state == MARIO_SMALL) {
+                printf("Small Mario died! Restarting game...\n");
+                reset_game(&player, &level, &enemy_manager);
+                load_level_textures(&level);
+                load_player_sprites(&player);
+                load_enemy_sprites(&enemy_manager);
+                continue; // Skip rest of frame processing
+            }
+        }
+        if (enemy_defeated) {
+            // Player defeated an enemy - give a little bounce
+            if (player.velocity.y > -200) { // Only bounce if not already jumping high
+                player.velocity.y = -300; // Small bounce
+            }
         }
 
         // Update camera to follow player
@@ -178,6 +273,9 @@ int main()
         // Draw level
         draw_level(level, camera);
 
+        // Draw enemies
+        draw_enemies(enemy_manager);
+
         // Draw player
         draw_player(player);
 
@@ -186,11 +284,28 @@ int main()
         // Draw UI elements here (outside camera)
         DrawText("World 1-1", 10, 10, 20, BLACK);
         DrawText("WASD to move and jump", 10, 40, 16, BLACK);
-        DrawText(TextFormat("Coins : %d", level.coin_count), 10, 60, 16, BLACK);
+        DrawText(TextFormat("Coins: %d", level.coin_count), 10, 70, 16, BLACK);
+
+        // Show Mario's current state
+        const char* mario_state_text;
+        switch (player.state) {
+            case MARIO_SMALL: mario_state_text = "Small Mario"; break;
+            case MARIO_SUPER: mario_state_text = "Super Mario"; break;
+            case MARIO_FIRE: mario_state_text = "Fire Mario"; break;
+            default: mario_state_text = "Unknown"; break;
+        }
+        DrawText(mario_state_text, 10, 100, 16, BLACK);
+
+        // Show enemy count
+        DrawText(TextFormat("Enemies: %d", enemy_manager.enemy_count), 10, 130, 16, BLACK);
 
         EndDrawing();
     }
+
+    // Clean up
     unload_level(level);
+    unload_player(player);
+    unload_enemy_manager(enemy_manager);
     CloseWindow();
     return 0;
 }

@@ -177,6 +177,30 @@ src/camera.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/mario.dir/build.make CMakeFiles/mario.dir/src/camera.c.s
 .PHONY : src/camera.c.s
 
+src/enemy.o: src/enemy.c.o
+.PHONY : src/enemy.o
+
+# target to build an object file
+src/enemy.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mario.dir/build.make CMakeFiles/mario.dir/src/enemy.c.o
+.PHONY : src/enemy.c.o
+
+src/enemy.i: src/enemy.c.i
+.PHONY : src/enemy.i
+
+# target to preprocess a source file
+src/enemy.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mario.dir/build.make CMakeFiles/mario.dir/src/enemy.c.i
+.PHONY : src/enemy.c.i
+
+src/enemy.s: src/enemy.c.s
+.PHONY : src/enemy.s
+
+# target to generate assembly for a file
+src/enemy.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mario.dir/build.make CMakeFiles/mario.dir/src/enemy.c.s
+.PHONY : src/enemy.c.s
+
 src/game.o: src/game.c.o
 .PHONY : src/game.o
 
@@ -336,6 +360,9 @@ help:
 	@echo "... src/camera.o"
 	@echo "... src/camera.i"
 	@echo "... src/camera.s"
+	@echo "... src/enemy.o"
+	@echo "... src/enemy.i"
+	@echo "... src/enemy.s"
 	@echo "... src/game.o"
 	@echo "... src/game.i"
 	@echo "... src/game.s"

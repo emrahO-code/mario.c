@@ -10,6 +10,47 @@ CMakeFiles/mario.dir/src/camera.c.o: /home/emraho/Projects/mario.c/src/camera.c 
   /usr/lib/gcc/aarch64-unknown-linux-gnu/14.2.1/include/stdbool.h \
   /usr/local/include/raylib.h
 
+CMakeFiles/mario.dir/src/enemy.c.o: /home/emraho/Projects/mario.c/src/enemy.c \
+  /home/emraho/Projects/mario.c/include/enemy.h \
+  /home/emraho/Projects/mario.c/include/level.h \
+  /usr/include/bits/floatn-common.h \
+  /usr/include/bits/floatn.h \
+  /usr/include/bits/flt-eval-method.h \
+  /usr/include/bits/fp-fast.h \
+  /usr/include/bits/fp-logb.h \
+  /usr/include/bits/libc-header-start.h \
+  /usr/include/bits/libm-simd-decl-stubs.h \
+  /usr/include/bits/long-double.h \
+  /usr/include/bits/math-vector.h \
+  /usr/include/bits/mathcalls-helper-functions.h \
+  /usr/include/bits/mathcalls-macros.h \
+  /usr/include/bits/mathcalls.h \
+  /usr/include/bits/stdio_lim.h \
+  /usr/include/bits/time64.h \
+  /usr/include/bits/timesize.h \
+  /usr/include/bits/types.h \
+  /usr/include/bits/types/FILE.h \
+  /usr/include/bits/types/__FILE.h \
+  /usr/include/bits/types/__fpos64_t.h \
+  /usr/include/bits/types/__fpos_t.h \
+  /usr/include/bits/types/__mbstate_t.h \
+  /usr/include/bits/types/cookie_io_functions_t.h \
+  /usr/include/bits/types/struct_FILE.h \
+  /usr/include/bits/typesizes.h \
+  /usr/include/bits/wordsize.h \
+  /usr/include/features-time64.h \
+  /usr/include/features.h \
+  /usr/include/gnu/stubs-lp64.h \
+  /usr/include/gnu/stubs.h \
+  /usr/include/math.h \
+  /usr/include/stdc-predef.h \
+  /usr/include/stdio.h \
+  /usr/include/sys/cdefs.h \
+  /usr/lib/gcc/aarch64-unknown-linux-gnu/14.2.1/include/stdarg.h \
+  /usr/lib/gcc/aarch64-unknown-linux-gnu/14.2.1/include/stdbool.h \
+  /usr/lib/gcc/aarch64-unknown-linux-gnu/14.2.1/include/stddef.h \
+  /usr/local/include/raylib.h
+
 CMakeFiles/mario.dir/src/game.c.o: /home/emraho/Projects/mario.c/src/game.c \
   /usr/include/stdc-predef.h
 
@@ -53,6 +94,7 @@ CMakeFiles/mario.dir/src/level.c.o: /home/emraho/Projects/mario.c/src/level.c \
 
 CMakeFiles/mario.dir/src/main.c.o: /home/emraho/Projects/mario.c/src/main.c \
   /home/emraho/Projects/mario.c/include/camera.h \
+  /home/emraho/Projects/mario.c/include/enemy.h \
   /home/emraho/Projects/mario.c/include/level.h \
   /home/emraho/Projects/mario.c/include/player.h \
   /usr/include/bits/floatn-common.h \
@@ -117,9 +159,42 @@ CMakeFiles/mario.dir/src/platform.c.o: /home/emraho/Projects/mario.c/src/platfor
 
 CMakeFiles/mario.dir/src/player.c.o: /home/emraho/Projects/mario.c/src/player.c \
   /home/emraho/Projects/mario.c/include/player.h \
+  /usr/include/bits/floatn-common.h \
+  /usr/include/bits/floatn.h \
+  /usr/include/bits/flt-eval-method.h \
+  /usr/include/bits/fp-fast.h \
+  /usr/include/bits/fp-logb.h \
+  /usr/include/bits/libc-header-start.h \
+  /usr/include/bits/libm-simd-decl-stubs.h \
+  /usr/include/bits/long-double.h \
+  /usr/include/bits/math-vector.h \
+  /usr/include/bits/mathcalls-helper-functions.h \
+  /usr/include/bits/mathcalls-macros.h \
+  /usr/include/bits/mathcalls.h \
+  /usr/include/bits/stdio_lim.h \
+  /usr/include/bits/time64.h \
+  /usr/include/bits/timesize.h \
+  /usr/include/bits/types.h \
+  /usr/include/bits/types/FILE.h \
+  /usr/include/bits/types/__FILE.h \
+  /usr/include/bits/types/__fpos64_t.h \
+  /usr/include/bits/types/__fpos_t.h \
+  /usr/include/bits/types/__mbstate_t.h \
+  /usr/include/bits/types/cookie_io_functions_t.h \
+  /usr/include/bits/types/struct_FILE.h \
+  /usr/include/bits/typesizes.h \
+  /usr/include/bits/wordsize.h \
+  /usr/include/features-time64.h \
+  /usr/include/features.h \
+  /usr/include/gnu/stubs-lp64.h \
+  /usr/include/gnu/stubs.h \
+  /usr/include/math.h \
   /usr/include/stdc-predef.h \
+  /usr/include/stdio.h \
+  /usr/include/sys/cdefs.h \
   /usr/lib/gcc/aarch64-unknown-linux-gnu/14.2.1/include/stdarg.h \
   /usr/lib/gcc/aarch64-unknown-linux-gnu/14.2.1/include/stdbool.h \
+  /usr/lib/gcc/aarch64-unknown-linux-gnu/14.2.1/include/stddef.h \
   /usr/local/include/raylib.h
 
 mario: /usr/lib/Scrt1.o \
@@ -151,6 +226,7 @@ mario: /usr/lib/Scrt1.o \
   /usr/local/lib/libraylib.so \
   CMakeFiles/mario.dir/src/block.c.o \
   CMakeFiles/mario.dir/src/camera.c.o \
+  CMakeFiles/mario.dir/src/enemy.c.o \
   CMakeFiles/mario.dir/src/game.c.o \
   CMakeFiles/mario.dir/src/item.c.o \
   CMakeFiles/mario.dir/src/level.c.o \
@@ -164,6 +240,8 @@ CMakeFiles/mario.dir/src/player.c.o:
 CMakeFiles/mario.dir/src/main.c.o:
 
 CMakeFiles/mario.dir/src/level.c.o:
+
+CMakeFiles/mario.dir/src/enemy.c.o:
 
 CMakeFiles/mario.dir/src/camera.c.o:
 
@@ -199,6 +277,8 @@ CMakeFiles/mario.dir/src/game.c.o:
 
 /usr/lib/libgcc_s.so.1:
 
+/usr/lib/libgcc_s.so:
+
 /usr/lib/libOpenGL.so.0:
 
 /usr/include/bits/types/__fpos64_t.h:
@@ -213,45 +293,69 @@ CMakeFiles/mario.dir/src/game.c.o:
 
 /usr/include/bits/types/__FILE.h:
 
-/usr/local/lib/libraylib.so:
+/usr/include/bits/stdio_lim.h:
 
-/usr/include/bits/timesize.h:
+/usr/lib/libc_nonshared.a:
 
-/usr/include/stdc-predef.h:
+/usr/include/bits/types.h:
 
-/usr/include/sys/cdefs.h:
+/home/emraho/Projects/mario.c/src/main.c:
+
+/usr/lib/crti.o:
+
+/usr/include/bits/fp-logb.h:
+
+/usr/include/bits/libm-simd-decl-stubs.h:
+
+/usr/include/bits/libc-header-start.h:
+
+/usr/local/include/raylib.h:
+
+/usr/include/strings.h:
+
+/usr/include/bits/math-vector.h:
+
+/usr/include/bits/types/__fpos_t.h:
 
 /usr/include/bits/wordsize.h:
-
-/usr/include/bits/typesizes.h:
 
 /home/emraho/Projects/mario.c/src/block.c:
 
 /usr/include/bits/types/cookie_io_functions_t.h:
 
-/usr/include/bits/time64.h:
-
-/usr/include/string.h:
-
-/usr/include/bits/stdio_lim.h:
-
-/usr/include/bits/long-double.h:
-
-/usr/include/bits/fp-logb.h:
+/usr/include/bits/typesizes.h:
 
 /home/emraho/Projects/mario.c/include/level.h:
 
+/usr/include/bits/mathcalls-macros.h:
+
+/usr/lib/gcc/aarch64-unknown-linux-gnu/14.2.1/include/stddef.h:
+
+/usr/include/stdc-predef.h:
+
+/usr/local/lib/libraylib.so:
+
+/usr/include/bits/timesize.h:
+
+/usr/include/sys/cdefs.h:
+
+/usr/include/bits/mathcalls.h:
+
+/home/emraho/Projects/mario.c/src/enemy.c:
+
+/usr/include/bits/floatn-common.h:
+
 /usr/lib/gcc/aarch64-unknown-linux-gnu/14.2.1/include/stdbool.h:
 
-/usr/local/include/raylib.h:
+/usr/include/bits/long-double.h:
 
-/usr/include/bits/libc-header-start.h:
+/home/emraho/Projects/mario.c/include/enemy.h:
 
-/usr/include/strings.h:
+/usr/lib/gcc/aarch64-unknown-linux-gnu/14.2.1/include/stdarg.h:
 
-/usr/include/bits/types/struct_FILE.h:
+/usr/include/bits/floatn.h:
 
-/usr/include/features.h:
+/usr/include/bits/flt-eval-method.h:
 
 CMakeFiles/mario.dir/src/item.c.o:
 
@@ -259,31 +363,39 @@ CMakeFiles/mario.dir/src/item.c.o:
 
 /usr/include/bits/types/__locale_t.h:
 
-/usr/include/bits/flt-eval-method.h:
+/usr/include/string.h:
 
-/usr/lib/libc_nonshared.a:
+/usr/include/bits/time64.h:
 
-/usr/include/bits/types.h:
+/usr/lib/libc.so:
 
-/usr/include/bits/floatn-common.h:
+/usr/include/bits/fp-fast.h:
+
+/usr/lib/crtn.o:
 
 /usr/include/bits/types/__mbstate_t.h:
 
-/usr/lib/gcc/aarch64-unknown-linux-gnu/14.2.1/include/stdarg.h:
+/usr/include/bits/types/struct_FILE.h:
 
-/usr/include/bits/floatn.h:
+/usr/include/features.h:
 
-/home/emraho/Projects/mario.c/src/level.c:
+/usr/include/math.h:
 
-/usr/include/stdio.h:
-
-/home/emraho/Projects/mario.c/src/main.c:
-
-/home/emraho/Projects/mario.c/src/item.c:
+/usr/include/gnu/stubs.h:
 
 /usr/include/bits/mathcalls-helper-functions.h:
 
-/usr/lib/crti.o:
+/home/emraho/Projects/mario.c/src/item.c:
+
+/usr/include/stdio.h:
+
+/home/emraho/Projects/mario.c/src/level.c:
+
+/usr/lib/libpthread.a:
+
+/usr/lib/libdl.a:
+
+/usr/include/bits/types/locale_t.h:
 
 /home/emraho/Projects/mario.c/include/camera.h:
 
@@ -299,38 +411,8 @@ CMakeFiles/mario.dir/src/item.c.o:
 
 /home/emraho/Projects/mario.c/include/platform.h:
 
-/usr/lib/libc.so:
-
-/usr/include/bits/fp-fast.h:
-
-/usr/lib/crtn.o:
-
-/usr/include/bits/libm-simd-decl-stubs.h:
-
-/usr/include/bits/types/__fpos_t.h:
-
-/usr/include/bits/math-vector.h:
-
-/usr/include/gnu/stubs.h:
-
-/usr/include/math.h:
-
-/usr/lib/gcc/aarch64-unknown-linux-gnu/14.2.1/include/stddef.h:
-
-/usr/include/bits/mathcalls-macros.h:
-
-/usr/include/bits/mathcalls.h:
-
 /home/emraho/Projects/mario.c/src/player.c:
 
 /home/emraho/Projects/mario.c/src/game.c:
 
 /usr/lib/Scrt1.o:
-
-/usr/lib/libpthread.a:
-
-/usr/include/bits/types/locale_t.h:
-
-/usr/lib/libdl.a:
-
-/usr/lib/libgcc_s.so:

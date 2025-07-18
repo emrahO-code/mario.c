@@ -100,10 +100,24 @@ CMakeFiles/mario.dir/src/camera.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/mario.dir/src/camera.c.s"
 	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/emraho/Projects/mario.c/src/camera.c -o CMakeFiles/mario.dir/src/camera.c.s
 
+CMakeFiles/mario.dir/src/enemy.c.o: CMakeFiles/mario.dir/flags.make
+CMakeFiles/mario.dir/src/enemy.c.o: /home/emraho/Projects/mario.c/src/enemy.c
+CMakeFiles/mario.dir/src/enemy.c.o: CMakeFiles/mario.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/emraho/Projects/mario.c/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object CMakeFiles/mario.dir/src/enemy.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/mario.dir/src/enemy.c.o -MF CMakeFiles/mario.dir/src/enemy.c.o.d -o CMakeFiles/mario.dir/src/enemy.c.o -c /home/emraho/Projects/mario.c/src/enemy.c
+
+CMakeFiles/mario.dir/src/enemy.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/mario.dir/src/enemy.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/emraho/Projects/mario.c/src/enemy.c > CMakeFiles/mario.dir/src/enemy.c.i
+
+CMakeFiles/mario.dir/src/enemy.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/mario.dir/src/enemy.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/emraho/Projects/mario.c/src/enemy.c -o CMakeFiles/mario.dir/src/enemy.c.s
+
 CMakeFiles/mario.dir/src/game.c.o: CMakeFiles/mario.dir/flags.make
 CMakeFiles/mario.dir/src/game.c.o: /home/emraho/Projects/mario.c/src/game.c
 CMakeFiles/mario.dir/src/game.c.o: CMakeFiles/mario.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/emraho/Projects/mario.c/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object CMakeFiles/mario.dir/src/game.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/emraho/Projects/mario.c/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object CMakeFiles/mario.dir/src/game.c.o"
 	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/mario.dir/src/game.c.o -MF CMakeFiles/mario.dir/src/game.c.o.d -o CMakeFiles/mario.dir/src/game.c.o -c /home/emraho/Projects/mario.c/src/game.c
 
 CMakeFiles/mario.dir/src/game.c.i: cmake_force
@@ -117,7 +131,7 @@ CMakeFiles/mario.dir/src/game.c.s: cmake_force
 CMakeFiles/mario.dir/src/item.c.o: CMakeFiles/mario.dir/flags.make
 CMakeFiles/mario.dir/src/item.c.o: /home/emraho/Projects/mario.c/src/item.c
 CMakeFiles/mario.dir/src/item.c.o: CMakeFiles/mario.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/emraho/Projects/mario.c/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object CMakeFiles/mario.dir/src/item.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/emraho/Projects/mario.c/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object CMakeFiles/mario.dir/src/item.c.o"
 	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/mario.dir/src/item.c.o -MF CMakeFiles/mario.dir/src/item.c.o.d -o CMakeFiles/mario.dir/src/item.c.o -c /home/emraho/Projects/mario.c/src/item.c
 
 CMakeFiles/mario.dir/src/item.c.i: cmake_force
@@ -131,7 +145,7 @@ CMakeFiles/mario.dir/src/item.c.s: cmake_force
 CMakeFiles/mario.dir/src/level.c.o: CMakeFiles/mario.dir/flags.make
 CMakeFiles/mario.dir/src/level.c.o: /home/emraho/Projects/mario.c/src/level.c
 CMakeFiles/mario.dir/src/level.c.o: CMakeFiles/mario.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/emraho/Projects/mario.c/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object CMakeFiles/mario.dir/src/level.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/emraho/Projects/mario.c/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building C object CMakeFiles/mario.dir/src/level.c.o"
 	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/mario.dir/src/level.c.o -MF CMakeFiles/mario.dir/src/level.c.o.d -o CMakeFiles/mario.dir/src/level.c.o -c /home/emraho/Projects/mario.c/src/level.c
 
 CMakeFiles/mario.dir/src/level.c.i: cmake_force
@@ -145,7 +159,7 @@ CMakeFiles/mario.dir/src/level.c.s: cmake_force
 CMakeFiles/mario.dir/src/main.c.o: CMakeFiles/mario.dir/flags.make
 CMakeFiles/mario.dir/src/main.c.o: /home/emraho/Projects/mario.c/src/main.c
 CMakeFiles/mario.dir/src/main.c.o: CMakeFiles/mario.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/emraho/Projects/mario.c/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building C object CMakeFiles/mario.dir/src/main.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/emraho/Projects/mario.c/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building C object CMakeFiles/mario.dir/src/main.c.o"
 	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/mario.dir/src/main.c.o -MF CMakeFiles/mario.dir/src/main.c.o.d -o CMakeFiles/mario.dir/src/main.c.o -c /home/emraho/Projects/mario.c/src/main.c
 
 CMakeFiles/mario.dir/src/main.c.i: cmake_force
@@ -159,7 +173,7 @@ CMakeFiles/mario.dir/src/main.c.s: cmake_force
 CMakeFiles/mario.dir/src/platform.c.o: CMakeFiles/mario.dir/flags.make
 CMakeFiles/mario.dir/src/platform.c.o: /home/emraho/Projects/mario.c/src/platform.c
 CMakeFiles/mario.dir/src/platform.c.o: CMakeFiles/mario.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/emraho/Projects/mario.c/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building C object CMakeFiles/mario.dir/src/platform.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/emraho/Projects/mario.c/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building C object CMakeFiles/mario.dir/src/platform.c.o"
 	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/mario.dir/src/platform.c.o -MF CMakeFiles/mario.dir/src/platform.c.o.d -o CMakeFiles/mario.dir/src/platform.c.o -c /home/emraho/Projects/mario.c/src/platform.c
 
 CMakeFiles/mario.dir/src/platform.c.i: cmake_force
@@ -173,7 +187,7 @@ CMakeFiles/mario.dir/src/platform.c.s: cmake_force
 CMakeFiles/mario.dir/src/player.c.o: CMakeFiles/mario.dir/flags.make
 CMakeFiles/mario.dir/src/player.c.o: /home/emraho/Projects/mario.c/src/player.c
 CMakeFiles/mario.dir/src/player.c.o: CMakeFiles/mario.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/emraho/Projects/mario.c/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building C object CMakeFiles/mario.dir/src/player.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/emraho/Projects/mario.c/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building C object CMakeFiles/mario.dir/src/player.c.o"
 	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/mario.dir/src/player.c.o -MF CMakeFiles/mario.dir/src/player.c.o.d -o CMakeFiles/mario.dir/src/player.c.o -c /home/emraho/Projects/mario.c/src/player.c
 
 CMakeFiles/mario.dir/src/player.c.i: cmake_force
@@ -188,6 +202,7 @@ CMakeFiles/mario.dir/src/player.c.s: cmake_force
 mario_OBJECTS = \
 "CMakeFiles/mario.dir/src/block.c.o" \
 "CMakeFiles/mario.dir/src/camera.c.o" \
+"CMakeFiles/mario.dir/src/enemy.c.o" \
 "CMakeFiles/mario.dir/src/game.c.o" \
 "CMakeFiles/mario.dir/src/item.c.o" \
 "CMakeFiles/mario.dir/src/level.c.o" \
@@ -200,6 +215,7 @@ mario_EXTERNAL_OBJECTS =
 
 mario: CMakeFiles/mario.dir/src/block.c.o
 mario: CMakeFiles/mario.dir/src/camera.c.o
+mario: CMakeFiles/mario.dir/src/enemy.c.o
 mario: CMakeFiles/mario.dir/src/game.c.o
 mario: CMakeFiles/mario.dir/src/item.c.o
 mario: CMakeFiles/mario.dir/src/level.c.o
@@ -210,7 +226,7 @@ mario: CMakeFiles/mario.dir/build.make
 mario: CMakeFiles/mario.dir/compiler_depend.ts
 mario: /usr/local/lib/libraylib.so
 mario: CMakeFiles/mario.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/emraho/Projects/mario.c/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Linking C executable mario"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/emraho/Projects/mario.c/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Linking C executable mario"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/mario.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
