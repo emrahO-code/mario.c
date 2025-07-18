@@ -129,30 +129,6 @@ mario/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/mario.dir/build.make CMakeFiles/mario.dir/build
 .PHONY : mario/fast
 
-src/block.o: src/block.c.o
-.PHONY : src/block.o
-
-# target to build an object file
-src/block.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/mario.dir/build.make CMakeFiles/mario.dir/src/block.c.o
-.PHONY : src/block.c.o
-
-src/block.i: src/block.c.i
-.PHONY : src/block.i
-
-# target to preprocess a source file
-src/block.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/mario.dir/build.make CMakeFiles/mario.dir/src/block.c.i
-.PHONY : src/block.c.i
-
-src/block.s: src/block.c.s
-.PHONY : src/block.s
-
-# target to generate assembly for a file
-src/block.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/mario.dir/build.make CMakeFiles/mario.dir/src/block.c.s
-.PHONY : src/block.c.s
-
 src/camera.o: src/camera.c.o
 .PHONY : src/camera.o
 
@@ -297,30 +273,6 @@ src/main.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/mario.dir/build.make CMakeFiles/mario.dir/src/main.c.s
 .PHONY : src/main.c.s
 
-src/platform.o: src/platform.c.o
-.PHONY : src/platform.o
-
-# target to build an object file
-src/platform.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/mario.dir/build.make CMakeFiles/mario.dir/src/platform.c.o
-.PHONY : src/platform.c.o
-
-src/platform.i: src/platform.c.i
-.PHONY : src/platform.i
-
-# target to preprocess a source file
-src/platform.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/mario.dir/build.make CMakeFiles/mario.dir/src/platform.c.i
-.PHONY : src/platform.c.i
-
-src/platform.s: src/platform.c.s
-.PHONY : src/platform.s
-
-# target to generate assembly for a file
-src/platform.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/mario.dir/build.make CMakeFiles/mario.dir/src/platform.c.s
-.PHONY : src/platform.c.s
-
 src/player.o: src/player.c.o
 .PHONY : src/player.o
 
@@ -354,9 +306,6 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... mario"
-	@echo "... src/block.o"
-	@echo "... src/block.i"
-	@echo "... src/block.s"
 	@echo "... src/camera.o"
 	@echo "... src/camera.i"
 	@echo "... src/camera.s"
@@ -375,9 +324,6 @@ help:
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
-	@echo "... src/platform.o"
-	@echo "... src/platform.i"
-	@echo "... src/platform.s"
 	@echo "... src/player.o"
 	@echo "... src/player.i"
 	@echo "... src/player.s"
