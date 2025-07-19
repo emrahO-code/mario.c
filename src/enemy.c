@@ -17,7 +17,7 @@ void load_enemy_sprites(EnemyManager* manager) {
     manager->enemy_sprites = LoadTexture("assets/mario_enemy.png");
     if (manager->enemy_sprites.id == 0) {
     } else {
-        manager->enemy_sprites.width, manager->enemy_sprites.height);
+        manager->enemy_sprites.width, manager->enemy_sprites.height;
     }
 }
 

@@ -284,7 +284,6 @@ mario: /usr/lib/Scrt1.o \
   CMakeFiles/mario.dir/src/camera.c.o \
   CMakeFiles/mario.dir/src/collision.c.o \
   CMakeFiles/mario.dir/src/enemy.c.o \
-  CMakeFiles/mario.dir/src/game.c.o \
   CMakeFiles/mario.dir/src/item.c.o \
   CMakeFiles/mario.dir/src/level.c.o \
   CMakeFiles/mario.dir/src/main.c.o \
@@ -326,8 +325,6 @@ CMakeFiles/mario.dir/src/camera.c.o:
 /usr/lib/gcc/aarch64-unknown-linux-gnu/14.2.1/crtbeginS.o:
 
 /usr/lib/libm.so:
-
-CMakeFiles/mario.dir/src/game.c.o:
 
 /usr/lib/libGLX.so.0:
 
