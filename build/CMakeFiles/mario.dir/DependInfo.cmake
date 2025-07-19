@@ -9,6 +9,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/emraho/Projects/mario.c/src/camera.c" "CMakeFiles/mario.dir/src/camera.c.o" "gcc" "CMakeFiles/mario.dir/src/camera.c.o.d"
+  "/home/emraho/Projects/mario.c/src/collision.c" "CMakeFiles/mario.dir/src/collision.c.o" "gcc" "CMakeFiles/mario.dir/src/collision.c.o.d"
   "/home/emraho/Projects/mario.c/src/enemy.c" "CMakeFiles/mario.dir/src/enemy.c.o" "gcc" "CMakeFiles/mario.dir/src/enemy.c.o.d"
   "/home/emraho/Projects/mario.c/src/game.c" "CMakeFiles/mario.dir/src/game.c.o" "gcc" "CMakeFiles/mario.dir/src/game.c.o.d"
   "/home/emraho/Projects/mario.c/src/item.c" "CMakeFiles/mario.dir/src/item.c.o" "gcc" "CMakeFiles/mario.dir/src/item.c.o.d"

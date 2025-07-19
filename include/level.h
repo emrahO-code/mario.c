@@ -3,11 +3,9 @@
 
 #include <raylib.h>
 
-#define LEVEL_WIDTH 230
+#define LEVEL_WIDTH 250  // Extended from 200 to 250
 #define LEVEL_HEIGHT 15
 #define TILE_SIZE 32
-
-// Remove this line: typedef struct ItemManager ItemManager;
 
 typedef enum {
     TILE_EMPTY,
@@ -33,13 +31,16 @@ typedef struct {
     int coin_count;
 } Level;
 
+// Level creation functions
 Level create_world_1_1(void);
+
+// Core level functions
 void load_level_textures(Level* level);
 void draw_level(Level level, Camera2D camera);
 bool check_tile_collision(Rectangle player_rect, Level level, int* tile_x, int* tile_y);
 TileType get_tile_at_position(Level level, float x, float y);
-// Change this line to use void* instead of ItemManager*
 bool interact_with_block(Level* level, int tile_x, int tile_y, void* item_manager, void* player);
+bool check_flagpole_collision(Level level, Rectangle player_rect);
 void unload_level(Level level);
 
 #endif

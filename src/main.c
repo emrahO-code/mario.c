@@ -5,349 +5,287 @@
 #include <level.h>
 #include <enemy.h>
 #include <item.h>
+#include <collision.h>
 
-bool check_pit_collision(Player* player) {
-    // Check if Mario has fallen below the ground level (into a pit)
-    float pit_threshold = (LEVEL_HEIGHT - 1) * TILE_SIZE + 50; // A bit below ground level
+// Game constants
+typedef struct {
+    int JUMP_VELOCITY;
+    int WALK_SPEED;
+    int GRAVITY;
+    Vector2 SCREEN_SIZE;
+} GameConstants;
 
-    if (player->rectangle.y > pit_threshold) {
-        printf("Mario fell into a pit! Game restarting...\n");
-        return true;
-    }
-    return false;
+// Game state
+typedef struct {
+    Level level;
+    Player player;
+    EnemyManager enemy_manager;
+    ItemManager item_manager;
+    Camera2D camera;
+} GameState;
+
+GameConstants create_constants(void) {
+    return (GameConstants){
+        .JUMP_VELOCITY = -700,
+        .WALK_SPEED = 300,
+        .GRAVITY = 1300,
+        .SCREEN_SIZE = {800, 600}
+    };
 }
 
-void reset_game(Player* player, Level* level, EnemyManager* enemy_manager, ItemManager* item_manager) {
-    // Reset player position and state
-    player->rectangle.x = 380; // Starting X position
-    player->rectangle.y = (LEVEL_HEIGHT - 4) * TILE_SIZE; // Starting Y position
-    player->velocity.x = 0;
-    player->velocity.y = 0;
-    player->state = MARIO_SMALL; // Reset to small Mario
-    player->facing_right = true;
-    player->invincible = false;
-    player->invincible_timer = 0;
-    update_mario_size(player); // Update collision box size
+GameState create_game_state(GameConstants constants) {
+    GameState game = {0};
 
-    // Reset level (recreate it to restore broken blocks and reset coin count)
-    unload_level(*level);
-    *level = create_world_1_1();
+    game.level = create_world_1_1();
+    game.player = create_player();
+    game.enemy_manager = create_enemy_manager();
+    game.item_manager = create_item_manager();
+    game.camera = create_camera((Vector2){constants.SCREEN_SIZE.x/2, constants.SCREEN_SIZE.y/2});
 
-    // Reset enemies - deactivate all enemies and respawn them
-    spawn_configured_enemies(enemy_manager);
+    // Set initial player position
+    game.player.rectangle.x = 380;
+    game.player.rectangle.y = (LEVEL_HEIGHT - 4) * TILE_SIZE;
 
-    // Reset items - deactivate all items
+    return game;
+}
+
+void load_game_assets(GameState* game) {
+    load_level_textures(&game->level);
+    load_player_sprites(&game->player);
+    load_enemy_sprites(&game->enemy_manager);
+    load_item_sprites(&game->item_manager);
+    spawn_configured_enemies(&game->enemy_manager);
+}
+
+void reset_game(GameState* game) {
+    // Reset player
+    game->player.rectangle.x = 380;
+    game->player.rectangle.y = (LEVEL_HEIGHT - 4) * TILE_SIZE;
+    game->player.velocity = (Vector2){0, 0};
+    game->player.state = MARIO_SMALL;
+    game->player.facing_right = true;
+    game->player.invincible = false;
+    game->player.invincible_timer = 0;
+    update_mario_size(&game->player);
+
+    // Reset level
+    unload_level(game->level);
+    game->level = create_world_1_1();
+
+    // Reset enemies
+    spawn_configured_enemies(&game->enemy_manager);
+
+    // Reset items
     for (int i = 0; i < MAX_ITEMS; i++) {
-        item_manager->items[i].active = false;
+        game->item_manager.items[i].active = false;
     }
-    item_manager->active_count = 0;
+    game->item_manager.active_count = 0;
 
+    // Reload assets
+    load_game_assets(game);
     printf("Game reset! Mario is back at the start.\n");
 }
 
-bool check_level_collision(Player* player, Level* level, ItemManager* item_manager, float dt) {
-    bool on_ground = false;
-
-    // Check collision with level tiles
-    Rectangle future_rect = player->rectangle;
-    future_rect.y += player->velocity.y * dt;
-
-    // Check vertical collision (falling/jumping)
-    if (player->velocity.y > 0) { // Falling
-        // Check bottom collision
-        float bottom_y = future_rect.y + future_rect.height;
-        float left_x = future_rect.x + 2; // Small margin from edges
-        float right_x = future_rect.x + future_rect.width - 2;
-
-        // Check tiles under player's feet
-        for (float x = left_x; x < right_x; x += TILE_SIZE/4) { // More check points
-            TileType tile = get_tile_at_position(*level, x, bottom_y);
-            if (tile != TILE_EMPTY) {
-                // Calculate exact collision point
-                int tile_y = (int)(bottom_y / TILE_SIZE);
-                player->rectangle.y = tile_y * TILE_SIZE - player->rectangle.height;
-                player->velocity.y = 0;
-                on_ground = true;
-                break;
-            }
-        }
-    } else if (player->velocity.y < 0) { // Jumping up
-        // Check top collision
-        float top_y = future_rect.y;
-        float left_x = future_rect.x + 2; // Small margin from edges
-        float right_x = future_rect.x + future_rect.width - 2;
-
-        // Check tiles above player's head
-        for (float x = left_x; x < right_x; x += TILE_SIZE/4) { // More check points
-            TileType tile = get_tile_at_position(*level, x, top_y);
-            if (tile != TILE_EMPTY) {
-                // Hit ceiling - check for interactive blocks
-                int block_x = (int)(x / TILE_SIZE);
-                int block_y = (int)(top_y / TILE_SIZE);
-
-                // Try to interact with the block
-                if (tile == TILE_BRICK || tile == TILE_QUESTION || tile == TILE_QUESTION_USED) {
-                    interact_with_block(level, block_x, block_y, item_manager, player);
-                }
-
-                // Stop upward movement
-                int tile_y = (int)(top_y / TILE_SIZE);
-                player->rectangle.y = (tile_y + 1) * TILE_SIZE;
-                player->velocity.y = 0;
-                break;
-            }
-        }
+bool handle_collisions(GameState* game, float dt) {
+    // Check pit collision first
+    if (check_pit_collision(&game->player)) {
+        reset_game(game);
+        return true; // Game was reset
     }
 
-    return on_ground;
+    // Handle horizontal collision
+    if (!check_horizontal_collision(&game->player, game->level, dt)) {
+        game->player.rectangle.x += game->player.velocity.x * dt;
+    }
+
+    // Handle vertical collision and ground detection
+    bool on_ground = check_level_collision(&game->player, &game->level, &game->item_manager, dt);
+    game->player.on_ground = on_ground;
+
+    // Apply vertical movement if not on ground
+    if (!on_ground && game->player.velocity.y != 0) {
+        game->player.rectangle.y += game->player.velocity.y * dt;
+    }
+
+    return false; // No reset needed
 }
 
-bool check_horizontal_collision(Player* player, Level level, float dt) {
-    Rectangle future_rect = player->rectangle;
-    future_rect.x += player->velocity.x * dt;
-
-    // Check left world boundary (invisible wall)
-    if (future_rect.x < 0) {
-        player->rectangle.x = 0;
-        return true;
-    }
-
-    // Check left and right collision
-    float top_y = future_rect.y + 2; // Small margin from top/bottom
-    float bottom_y = future_rect.y + future_rect.height - 2;
-
-    if (player->velocity.x > 0) { // Moving right
-        float right_x = future_rect.x + future_rect.width;
-
-        for (float y = top_y; y < bottom_y; y += TILE_SIZE/4) { // More check points
-            TileType tile = get_tile_at_position(level, right_x, y);
-            if (tile != TILE_EMPTY) {
-                int tile_x = (int)(right_x / TILE_SIZE);
-                player->rectangle.x = tile_x * TILE_SIZE - player->rectangle.width - 1; // Small gap
-                return true;
-            }
-        }
-    } else if (player->velocity.x < 0) { // Moving left
-        float left_x = future_rect.x;
-
-        for (float y = top_y; y < bottom_y; y += TILE_SIZE/4) { // More check points
-            TileType tile = get_tile_at_position(level, left_x, y);
-            if (tile != TILE_EMPTY) {
-                int tile_x = (int)(left_x / TILE_SIZE);
-                player->rectangle.x = (tile_x + 1) * TILE_SIZE + 1; // Small gap
-                return true;
-            }
+void handle_interactions(GameState* game) {
+    // Item collision
+    ItemType collected_item;
+    if (check_player_item_collision(game->player.rectangle, &game->item_manager, &collected_item)) {
+        switch (collected_item) {
+            case ITEM_MUSHROOM:
+            case ITEM_FIRE_FLOWER:
+                mario_power_up(&game->player);
+                break;
+            case ITEM_STAR:
+                game->player.invincible = true;
+                game->player.invincible_timer = 10.0f;
+                printf("Star power! Mario is invincible!\n");
+                break;
+            case ITEM_1UP_MUSHROOM:
+                printf("Extra life!\n");
+                break;
+            case ITEM_COIN:
+                game->level.coin_count++;
+                break;
         }
     }
 
-    return false;
+    // Flagpole collision
+    if (check_flagpole_collision(game->level, game->player.rectangle)) {
+        printf("Mario reached the flagpole! Level complete!\n");
+        reset_game(game);
+        return;
+    }
+
+    // Enemy collision
+    bool enemy_defeated;
+    if (check_player_enemy_collision(game->player.rectangle, &game->enemy_manager, &enemy_defeated)) {
+        if (!game->player.invincible) {
+            MarioState old_state = game->player.state;
+            mario_take_damage(&game->player);
+
+            if (old_state == MARIO_SMALL) {
+                printf("Small Mario died! Restarting game...\n");
+                reset_game(game);
+                return;
+            }
+        } else {
+            printf("Mario is invincible - no damage taken!\n");
+        }
+    }
+
+    if (enemy_defeated && game->player.velocity.y > -200) {
+        game->player.velocity.y = -300; // Bounce
+    }
 }
 
-int main()
-{
-    //Constants
-    const int JUMPVELOCITY = -700;
-    const int WALKSPEED = 300;
-    const int GRAVITY = 1300;
+void handle_input(GameState* game, GameConstants constants) {
+    // Reset horizontal velocity
+    game->player.velocity.x = 0;
 
-    //SCREENSIZE INIT AND CAMERA
-    Vector2 SCREENSIZE;
-    SCREENSIZE.x = 800;
-    SCREENSIZE.y = 600;
-    Camera2D camera = create_camera((Vector2) {SCREENSIZE.x/2, SCREENSIZE.y/2});
+    // Handle movement input
+    if (IsKeyDown(KEY_A)) {
+        game->player.velocity.x = -constants.WALK_SPEED;
+        game->player.facing_right = false;
+    }
+    if (IsKeyDown(KEY_D)) {
+        game->player.velocity.x = constants.WALK_SPEED;
+        game->player.facing_right = true;
+    }
 
-    // Create level, player, enemies, and items
-    Level level = create_world_1_1();
-    Player player = create_player();
-    EnemyManager enemy_manager = create_enemy_manager();
-    ItemManager item_manager = create_item_manager();
+    // Handle jump input
+    if (game->player.on_ground && IsKeyDown(KEY_W)) {
+        game->player.velocity.y = constants.JUMP_VELOCITY;
+    }
+}
 
-    // Fix player starting position - place above ground
-    player.rectangle.x = 380; // Start a bit away from left edge
-    player.rectangle.y = (LEVEL_HEIGHT - 4) * TILE_SIZE; // Above ground level
+void update_game_systems(GameState* game, float dt) {
+    // Update player animation
+    update_player_animation(&game->player, dt);
 
-    //Init Window
-    InitWindow(SCREENSIZE.x, SCREENSIZE.y, "Mario - World 1-1");
+    // Update enemies
+    update_enemies(&game->enemy_manager, game->level, dt);
+
+    // Update items
+    update_items(&game->item_manager, &game->level, dt);
+
+    // Update camera to follow player
+    game->camera.target = (Vector2){
+        game->player.rectangle.x + game->player.rectangle.width/2,
+        180
+    };
+}
+
+void draw_game_world(GameState game) {
+    BeginMode2D(game.camera);
+
+    // Draw level
+    draw_level(game.level, game.camera);
+
+    // Draw enemies
+    draw_enemies(game.enemy_manager);
+
+    // Draw items
+    draw_items(game.item_manager);
+
+    // Draw player
+    draw_player(game.player);
+
+    EndMode2D();
+}
+
+void draw_ui(GameState game) {
+    DrawText("World 1-1", 10, 10, 20, BLACK);
+    DrawText("WASD to move and jump", 10, 40, 16, BLACK);
+    DrawText(TextFormat("Coins: %d", game.level.coin_count), 10, 70, 16, BLACK);
+
+    const char* mario_state_text;
+    switch (game.player.state) {
+        case MARIO_SMALL: mario_state_text = "Small Mario"; break;
+        case MARIO_SUPER: mario_state_text = "Super Mario"; break;
+        case MARIO_FIRE: mario_state_text = "Fire Mario"; break;
+        default: mario_state_text = "Unknown"; break;
+    }
+    DrawText(mario_state_text, 10, 100, 16, BLACK);
+    DrawText(TextFormat("Enemies: %d", game.enemy_manager.enemy_count), 10, 130, 16, BLACK);
+    DrawText(TextFormat("Items: %d", game.item_manager.active_count), 10, 160, 16, BLACK);
+
+    if (game.player.invincible) {
+        DrawText(TextFormat("STAR POWER! %.1fs", game.player.invincible_timer), 10, 190, 16, YELLOW);
+    }
+}
+
+void cleanup_game(GameState game) {
+    unload_level(game.level);
+    unload_player(game.player);
+    unload_enemy_manager(game.enemy_manager);
+    unload_item_manager(game.item_manager);
+}
+
+int main() {
+    GameConstants constants = create_constants();
+
+    InitWindow(constants.SCREEN_SIZE.x, constants.SCREEN_SIZE.y, "Mario - World 1-1");
     SetTargetFPS(60);
 
-    // Load all textures after window initialization
-    load_level_textures(&level);
-    load_player_sprites(&player);
-    load_enemy_sprites(&enemy_manager);
-    load_item_sprites(&item_manager);
+    GameState game = create_game_state(constants);
+    load_game_assets(&game);
 
-    // Spawn Goombas throughout the level
-    spawn_configured_enemies(&enemy_manager);
-
-    //Main game loop
-    while(!WindowShouldClose()) {
+    while (!WindowShouldClose()) {
         float dt = GetFrameTime();
 
         // Apply gravity
-        player.velocity.y += GRAVITY * dt;
+        game.player.velocity.y += constants.GRAVITY * dt;
 
-        // Handle input and direction
-        player.velocity.x = 0; // Reset horizontal velocity
+        // Handle input
+        handle_input(&game, constants);
 
-        if (IsKeyDown(KEY_A)) {
-            player.velocity.x = -WALKSPEED;
-            player.facing_right = false; // Face left
-        }
-        if (IsKeyDown(KEY_D)) {
-            player.velocity.x = WALKSPEED;
-            player.facing_right = true;  // Face right
+        // Handle collisions (returns true if game was reset)
+        if (handle_collisions(&game, dt)) {
+            continue; // Skip rest of frame if game was reset
         }
 
-        // Check for pit collision (Mario falling into pits)
-        if (check_pit_collision(&player)) {
-            reset_game(&player, &level, &enemy_manager, &item_manager);
-            // Reload textures after level reset
-            load_level_textures(&level);
-            load_player_sprites(&player);
-            load_enemy_sprites(&enemy_manager);
-            load_item_sprites(&item_manager);
-        }
+        // Handle interactions
+        handle_interactions(&game);
 
-        // Check horizontal collision and move horizontally
-        if (!check_horizontal_collision(&player, level, dt)) {
-            player.rectangle.x += player.velocity.x * dt;
-        }
+        // Update game systems
+        update_game_systems(&game, dt);
 
-        // Check vertical collision and handle jumping
-        bool on_ground = check_level_collision(&player, &level, &item_manager, dt);
-        player.on_ground = on_ground; // Update player's ground state
-
-        // Apply vertical movement if no collision
-        if (!on_ground && player.velocity.y != 0) {
-            player.rectangle.y += player.velocity.y * dt;
-        }
-
-        // Jump only when on ground
-        if (on_ground && IsKeyDown(KEY_W)) {
-            player.velocity.y = JUMPVELOCITY;
-        }
-
-        // Update player animation
-        update_player_animation(&player, dt);
-
-        // Update enemies (now includes collision detection)
-        update_enemies(&enemy_manager, level, dt);
-
-        // Update items
-        update_items(&item_manager, &level, dt);
-
-        // Check player-item collision
-        ItemType collected_item;
-        if (check_player_item_collision(player.rectangle, &item_manager, &collected_item)) {
-            switch (collected_item) {
-                case ITEM_MUSHROOM:
-                    mario_power_up(&player);
-                    break;
-                case ITEM_STAR:
-                    // Give star power (invincibility)
-                    player.invincible = true;
-                    player.invincible_timer = 10.0f; // 10 seconds of invincibility
-                    printf("Star power! Mario is invincible!\n");
-                    break;
-                case ITEM_FIRE_FLOWER:
-                    mario_power_up(&player);
-                    break;
-                case ITEM_1UP_MUSHROOM:
-                    // Add extra life logic
-                    printf("Extra life!\n");
-                    break;
-                case ITEM_COIN:
-                    level.coin_count++;
-                    break;
-            }
-        }
-
-        // Check player-enemy collision
-        bool enemy_defeated;
-        if (check_player_enemy_collision(player.rectangle, &enemy_manager, &enemy_defeated)) {
-            // Player was hit by enemy - take damage (unless invincible)
-            if (!player.invincible) {
-                MarioState old_state = player.state;
-                mario_take_damage(&player);
-
-                // Only restart if Small Mario gets hit
-                if (old_state == MARIO_SMALL) {
-                    printf("Small Mario died! Restarting game...\n");
-                    reset_game(&player, &level, &enemy_manager, &item_manager);
-                    load_level_textures(&level);
-                    load_player_sprites(&player);
-                    load_enemy_sprites(&enemy_manager);
-                    load_item_sprites(&item_manager);
-                    continue; // Skip rest of frame processing
-                }
-            } else {
-                printf("Mario is invincible - no damage taken!\n");
-            }
-        }
-        if (enemy_defeated) {
-            // Player defeated an enemy - give a little bounce
-            if (player.velocity.y > -200) { // Only bounce if not already jumping high
-                player.velocity.y = -300; // Small bounce
-            }
-        }
-
-        // Update camera to follow player
-        camera.target = (Vector2){player.rectangle.x + player.rectangle.width/2, 180};
-
-        // Drawing
+        // Draw everything
         BeginDrawing();
+        ClearBackground((Color){148, 148, 255, 255});
 
-        Color sky = (Color){148, 148, 255, 255};
-        ClearBackground(sky); // Sky color like Mario
-
-        BeginMode2D(camera);
-
-        // Draw level
-        draw_level(level, camera);
-
-        // Draw enemies
-        draw_enemies(enemy_manager);
-
-        // Draw items
-        draw_items(item_manager);
-
-        // Draw player
-        draw_player(player);
-
-        EndMode2D();
-
-        // Draw UI elements here (outside camera)
-        DrawText("World 1-1", 10, 10, 20, BLACK);
-        DrawText("WASD to move and jump", 10, 40, 16, BLACK);
-        DrawText(TextFormat("Coins: %d", level.coin_count), 10, 70, 16, BLACK);
-
-        // Show Mario's current state
-        const char* mario_state_text;
-        switch (player.state) {
-            case MARIO_SMALL: mario_state_text = "Small Mario"; break;
-            case MARIO_SUPER: mario_state_text = "Super Mario"; break;
-            case MARIO_FIRE: mario_state_text = "Fire Mario"; break;
-            default: mario_state_text = "Unknown"; break;
-        }
-        DrawText(mario_state_text, 10, 100, 16, BLACK);
-
-        // Show enemy and item counts
-        DrawText(TextFormat("Enemies: %d", enemy_manager.enemy_count), 10, 130, 16, BLACK);
-        DrawText(TextFormat("Items: %d", item_manager.active_count), 10, 160, 16, BLACK);
-
-        // Show invincibility status
-        if (player.invincible) {
-            DrawText(TextFormat("STAR POWER! %.1fs", player.invincible_timer), 10, 190, 16, YELLOW);
-        }
+        draw_game_world(game);
+        draw_ui(game);
 
         EndDrawing();
     }
 
-    // Clean up
-    unload_level(level);
-    unload_player(player);
-    unload_enemy_manager(enemy_manager);
-    unload_item_manager(item_manager);
+    cleanup_game(game);
     CloseWindow();
+
     return 0;
 }
