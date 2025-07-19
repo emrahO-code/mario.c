@@ -6,8 +6,11 @@ A simple recreation of World 1-1 from Super Mario Bros, built in C using Raylib.
 
 
 ![Gameplay](screenshots/mario1.png)
+![Gameplay](screenshots/mario2.png)
 *Basic gameplay showing Mario, enemies, and level elements*
 
+
+![Power-ups](screenshots/mario4.png)
 ![Power-ups](screenshots/mario3.png)
 *Mario collecting items and changing forms*
 
