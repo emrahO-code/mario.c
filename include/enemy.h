@@ -25,10 +25,8 @@ typedef struct {
     EnemyType type;
     EnemyState state;
     bool moving_right;
-    bool active;           // Is this enemy slot in use
-    float death_timer;     // Timer for death animation
-
-    // Animation
+    bool active;
+    float death_timer;
     int current_frame;
     float frame_timer;
     float frame_duration;
@@ -47,7 +45,6 @@ typedef struct {
     EnemyType type;
 } EnemySpawn;
 
-// Function declarations
 EnemyManager create_enemy_manager(void);
 void load_enemy_sprites(EnemyManager* manager);
 void spawn_goomba(EnemyManager* manager, float x, float y);
@@ -60,8 +57,6 @@ void unload_enemy_manager(EnemyManager manager);
 bool check_enemy_enemy_collision(Enemy* enemy, EnemyManager* manager);
 void spawn_goomba_at_tile(EnemyManager* manager, int tile_x, int tile_y);
 void spawn_configured_enemies(EnemyManager* enemy_manager);
-
-// Player-Enemy interaction
 bool check_player_enemy_collision(Rectangle player_rect, EnemyManager* manager, bool* enemy_defeated);
 void defeat_enemy(Enemy* enemy);
 

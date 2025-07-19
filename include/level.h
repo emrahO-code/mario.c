@@ -31,10 +31,7 @@ typedef struct {
     int coin_count;
 } Level;
 
-// Level creation functions
 Level create_world_1_1(void);
-
-// Core level functions
 void load_level_textures(Level* level);
 void draw_level(Level level, Camera2D camera);
 bool check_tile_collision(Rectangle player_rect, Level level, int* tile_x, int* tile_y);

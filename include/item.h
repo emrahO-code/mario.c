@@ -15,9 +15,9 @@ typedef enum {
 } ItemType;
 
 typedef enum {
-    ITEM_SPAWNING,    // Just appeared, moving up from block
-    ITEM_ACTIVE,      // Normal physics, can be collected
-    ITEM_COLLECTED    // Being collected (brief animation)
+    ITEM_SPAWNING,
+    ITEM_ACTIVE,
+    ITEM_COLLECTED
 } ItemState;
 
 typedef struct {
@@ -27,10 +27,8 @@ typedef struct {
     ItemState state;
     bool active;
     bool moving_right;
-    float spawn_timer;      // For spawn animation
-    float collection_timer; // For collection animation
-
-    // Animation
+    float spawn_timer;
+    float collection_timer;
     int current_frame;
     float frame_timer;
     float frame_duration;
@@ -43,7 +41,6 @@ typedef struct {
     Texture2D item_sprites;
 } ItemManager;
 
-// Function declarations - use void* for Level to avoid circular dependency
 ItemManager create_item_manager(void);
 void load_item_sprites(ItemManager* manager);
 void spawn_mushroom(ItemManager* manager, float x, float y);

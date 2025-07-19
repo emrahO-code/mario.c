@@ -91,9 +91,6 @@ CMakeFiles/mario.dir/src/enemy.c.o: /home/emraho/Projects/mario.c/src/enemy.c \
   /usr/lib/gcc/aarch64-unknown-linux-gnu/14.2.1/include/stddef.h \
   /usr/local/include/raylib.h
 
-CMakeFiles/mario.dir/src/game.c.o: /home/emraho/Projects/mario.c/src/game.c \
-  /usr/include/stdc-predef.h
-
 CMakeFiles/mario.dir/src/item.c.o: /home/emraho/Projects/mario.c/src/item.c \
   /home/emraho/Projects/mario.c/include/item.h \
   /home/emraho/Projects/mario.c/include/level.h \
@@ -460,16 +457,14 @@ CMakeFiles/mario.dir/src/item.c.o:
 
 /home/emraho/Projects/mario.c/src/level.c:
 
-/usr/lib/libpthread.a:
-
-/usr/lib/libdl.a:
-
-/usr/include/bits/types/locale_t.h:
-
 /home/emraho/Projects/mario.c/include/camera.h:
 
 /home/emraho/Projects/mario.c/src/player.c:
 
-/home/emraho/Projects/mario.c/src/game.c:
-
 /usr/lib/Scrt1.o:
+
+/usr/lib/libpthread.a:
+
+/usr/include/bits/types/locale_t.h:
+
+/usr/lib/libdl.a:

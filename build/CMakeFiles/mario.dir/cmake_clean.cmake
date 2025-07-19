@@ -6,8 +6,6 @@ file(REMOVE_RECURSE
   "CMakeFiles/mario.dir/src/collision.c.o.d"
   "CMakeFiles/mario.dir/src/enemy.c.o"
   "CMakeFiles/mario.dir/src/enemy.c.o.d"
-  "CMakeFiles/mario.dir/src/game.c.o"
-  "CMakeFiles/mario.dir/src/game.c.o.d"
   "CMakeFiles/mario.dir/src/item.c.o"
   "CMakeFiles/mario.dir/src/item.c.o.d"
   "CMakeFiles/mario.dir/src/level.c.o"
